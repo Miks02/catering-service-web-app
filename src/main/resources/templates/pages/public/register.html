@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org" th:with="pageTitle='Registracija'">
+
+<head th:replace="~{layouts/base :: head}"></head>
+
+<body>
+
+<div th:replace="~{layouts/base :: navbar}"></div>
+
+
+<div class="body-image">
+    <main th:replace="~{layouts/base :: mainContent}">
+        <th:block th:fragment="content">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-7">
+                    <div class=" border-0 shadow-sm rounded-3">
+                        <div class="card-body p-5 rounded-3 shadow auth-form gradient-green">
+                            <div class="text-center mb-4">
+                                <i class="bi bi-person-circle text-warning" style="font-size: 4rem;"></i>
+                                <h3 class="fw-bold mt-3 fs-2 text-warning">Registracija korisnika</h3>
+                                <p class="text-white">Unesite vaše podatke</p>
+                            </div>
+
+                            <form th:action="@{/login}" method="post">
+                                <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <strong>Greška!</strong> Došlo je do greške prilikom registracije.
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+
+                                <div th:if="${param.logout}" class="alert alert-success alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                    Uspešno ste se odjavili.
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                <div class="form-group-wrapper d-flex gap-3">
+                                    <div class="mb-3">
+                                        <label for="firstName" class="form-label">
+                                            <i class="bi bi-layout-text-window text-warning"></i>
+                                            Ime
+                                        </label>
+                                        <input type="text"
+                                               class="form-control form-control-lg"
+                                               id="firstName"
+                                               name="firstName"
+                                               placeholder="Unesite ime"
+                                               required
+                                               autofocus>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="lastName" class="form-label">
+                                            <i class="bi bi-layout-text-window-reverse text-warning"></i>
+                                            Prezime
+                                        </label>
+                                        <input type="text"
+                                               class="form-control form-control-lg"
+                                               id="lastName"
+                                               name="lastName"
+                                               placeholder="Unesite prezime"
+                                               required
+                                               autofocus>
+                                    </div>
+                                </div>
+
+                                <div class="form-group-wrapper d-flex gap-3">
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label">
+                                            <i class="bi bi-person-badge-fill text-warning"></i>
+                                            Korisničko ime
+                                        </label>
+                                        <input type="text"
+                                               class="form-control form-control-lg"
+                                               id="username"
+                                               name="username"
+                                               placeholder="Korisničko ime"
+                                               required
+                                               autofocus
+                                        >
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">
+                                            <i class="bi bi-envelope-at-fill text-warning"></i>
+                                            Email
+                                        </label>
+                                        <input type="text"
+                                               class="form-control form-control-lg"
+                                               id="email"
+                                               name="email"
+                                               placeholder="Unesite email adresu"
+                                               required
+                                               autofocus>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="form-group-wrapper d-flex gap-3">
+                                    <div class="mb-4">
+                                        <label for="password" class="form-label">
+                                            <i class="bi bi-lock-fill text-warning me-1"></i>
+                                            Lozinka
+                                        </label>
+                                        <input type="password"
+                                               class="form-control form-control-lg"
+                                               id="password"
+                                               name="password"
+                                               placeholder="Unesite lozinku"
+                                               required>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="confirmPassword" class="form-label">
+                                            <i class="bi bi-file-lock-fill text-warning"></i>
+                                            Potvrda lozinke
+                                        </label>
+                                        <input type="password"
+                                               class="form-control form-control-lg"
+                                               id="confirmPassword"
+                                               name="confirmPassword"
+                                               placeholder="Potvrdite lozinku"
+                                               required>
+                                    </div>
+                                </div>
+
+
+
+                                <button type="submit" class="btn btn-warning btn-lg w-100 mb-3">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>
+                                    Potvrdi registraciju
+                                </button>
+
+
+
+                                <div class="text-center">
+                                    <p class="mb-2 text-info">Imate nalog?</p>
+                                    <a th:href="@{/public/login}" class="btn btn-outline-info btn-lg w-100">
+                                        <i class="bi bi-person-plus me-2"></i>
+                                        Prijavite se
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+        </th:block>
+    </main>
+</div>
+
+
+<div th:replace="~{layouts/base :: footer}"></div>
+
+<div th:replace="~{layouts/base :: scripts}"></div>
+
+</body>
+</html>

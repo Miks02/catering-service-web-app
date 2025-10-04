@@ -13,4 +13,9 @@ public class AccountController {
         return "pages/public/login";
     }
 
+    @GetMapping("/register")
+    public String register() {
+        return "pages/public/register";
+    }
+
 }
