@@ -22,7 +22,11 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/images/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults())
+                .formLogin(form -> form
+                        .loginPage("/public/login")
+                        .loginProcessingUrl("/public/login")
+                        .defaultSuccessUrl("/public")
+                        .failureUrl("/public/login?error=true"))
                 .logout(Customizer.withDefaults());
 
         return http.build();
