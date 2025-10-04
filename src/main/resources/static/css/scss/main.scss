@@ -10,7 +10,9 @@
 }
 
 .hero-section {
-  background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("//images/hero_background.png") !important;
+  background:
+          linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+          url("/images/hero_background.png");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -42,6 +44,26 @@ nav {
 
 
   }
+}
+
+.body-image {
+  background:
+          linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+          url("/images/hero_background.png");
+  background-position: center;
+  background-repeat: no-repeat;
+
+}
+
+.gradient-green {
+  background: #17730a;
+  background: linear-gradient(266deg,rgba(23, 115, 10, 0.7) 0%, rgba(13, 130, 40, 0.7) 71%);
+}
+
+.auth-form {
+
+  color: #fff;
+  backdrop-filter: blur(50px);
 }
 
 

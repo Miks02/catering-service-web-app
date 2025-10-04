@@ -10,7 +10,7 @@
 </head>
 <body>
 
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light shadow sticky-top">
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-light shadow sticky-top gradient-green">
     <div class="container align-items-center">
         <a class="navbar-brand fw-bold text-white me-2 " th:href="@{/public}">
             <i class="bi bi-cup-hot-fill"></i> Ketering Služba
@@ -37,11 +37,11 @@
             </ul>
         </div>
 
-        <a class="btn btn-outline-warning ms-auto " th:href="@{/login}">Prijavi se</a>
+        <a class="btn btn-outline-warning ms-auto " th:href="@{/public/login}">Prijavi se</a>
     </div>
 </nav>
 
-<section th:fragment="hero" class="hero-section  p-5">
+<section th:fragment="hero" class="hero-section  p-5" >
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <div class="container text-center text-white">
@@ -67,7 +67,7 @@
     </div>
 </main>
 
-<footer th:fragment="footer" class="footer shadow text-white pt-5 pb-3">
+<footer th:fragment="footer" class="footer shadow text-white pt-5 pb-3 gradient-green">
     <div class="container">
         <div class="row g-4 mb-4">
             <div class="col-lg-4 col-md-6">
