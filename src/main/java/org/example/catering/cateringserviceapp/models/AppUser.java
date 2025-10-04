@@ -18,14 +18,6 @@ public class AppUser {
 
     private String username;
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     @Column(unique = true, nullable = false)
     private String email;
 
@@ -33,6 +25,14 @@ public class AppUser {
     @Enumerated(EnumType.STRING)
     private Role role;
     private Date createdAt;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
     private int rewardPoints = 0;
 
