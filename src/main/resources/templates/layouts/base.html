@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sr" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="sr" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:fragment="head">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -36,8 +36,15 @@
                 </li>
             </ul>
         </div>
+        <div sec:authorize="isAnonymous()">
+            <a class="btn btn-outline-warning ms-auto "  th:href="@{/public/login}">Prijavi se</a>
+        </div>
+        <div sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-outline-danger ms-auto">Odjavi se</button>
+            </form>
+        </div>
 
-        <a class="btn btn-outline-warning ms-auto " th:href="@{/public/login}">Prijavi se</a>
     </div>
 </nav>
 
