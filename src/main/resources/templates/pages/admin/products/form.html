@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="~{layouts/admin :: head}"></head>
+<body>
+
+<div class="admin-wrapper">
+    <!-- Sidebar -->
+    <aside th:replace="~{layouts/admin :: adminSidebar}"></aside>
+
+    <!-- Main Content -->
+    <div class="admin-content">
+        <!-- Topbar -->
+        <header class="admin-topbar">
+            <button type="button" class="topbar-mobile-toggle" id="mobileToggle">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <h1 class="topbar-title">
+                <i class="bi bi-box-seam"></i>
+                <span th:text="${product != null ? 'Izmeni Proizvod' : 'Dodaj Novi Proizvod'}">Dodaj Novi Proizvod</span>
+            </h1>
+
+            <div class="topbar-actions">
+                <a th:href="@{/admin/products}" class="topbar-btn btn-site">
+                    <i class="bi bi-arrow-left"></i>
+                    <span>Nazad</span>
+                </a>
+
+                <div class="topbar-user">
+                    <div class="topbar-user-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <span class="topbar-user-name" sec:authorize="isAuthenticated()" sec:authentication="name">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="admin-main">
+            <div class="form-container">
+                <form th:action="@{/admin/products/save}" method="post" enctype="multipart/form-data" id="productForm">
+                    <input type="hidden" name="id" th:value="${product != null ? product.id : ''}">
+
+                    <div class="form-card">
+                        <h3 class="form-section-title">
+                            <i class="bi bi-info-circle"></i>
+                            Osnovne Informacije
+                        </h3>
+
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label for="name">
+                                        <i class="bi bi-tag"></i>
+                                        Naziv Proizvoda
+                                        <span class="required">*</span>
+                                    </label>
+                                    <input type="text"
+                                           class="form-control"
+                                           id="name"
+                                           name="name"
+                                           th:value="${product != null ? product.name : ''}"
+                                           placeholder="npr. Svečana Torta Deluxe"
+                                           required>
+                                    <div class="invalid-feedback">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        Molimo unesite naziv proizvoda
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="price">
+                                        <i class="bi bi-currency-exchange"></i>
+                                        Cena
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="price-input-group">
+                                        <input type="number"
+                                               class="form-control"
+                                               id="price"
+                                               name="price"
+                                               th:value="${product != null ? product.price : ''}"
+                                               min="0"
+                                               step="100"
+                                               placeholder="0"
+                                               required>
+                                        <span class="currency-symbol">RSD</span>
+                                    </div>
+                                    <div class="form-help">Unesite cenu u dinarima</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">
+                                <i class="bi bi-file-text"></i>
+                                Opis
+                                <span class="required">*</span>
+                            </label>
+                            <textarea class="form-textarea"
+                                      id="description"
+                                      name="description"
+                                      th:text="${product != null ? product.description : ''}"
+                                      placeholder="Detaljan opis proizvoda..."
+                                      required></textarea>
+                            <div class="form-help">Opišite proizvod detaljno (sastojci, porcije, itd.)</div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="productType">
+                                        <i class="bi bi-grid"></i>
+                                        Tip Proizvoda
+                                        <span class="required">*</span>
+                                    </label>
+                                    <select class="form-select" id="productType" name="productType" required>
+                                        <option value="" disabled selected>Izaberite tip proizvoda</option>
+                                        <option th:each="type : ${T(org.example.catering.cateringserviceapp.enums.ProductType).values()}"
+                                                th:value="${type}"
+                                                th:text="${type.displayName}"
+                                                th:selected="${product != null && product.productType == type}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="eventType">
+                                        <i class="bi bi-calendar-event"></i>
+                                        Tip Događaja
+                                        <span class="required">*</span>
+                                    </label>
+                                    <select class="form-select" id="eventType" name="eventType" required>
+                                        <option value="" disabled selected>Izaberite tip događaja</option>
+                                        <option th:each="event : ${T(org.example.catering.cateringserviceapp.enums.EventType).values()}"
+                                                th:value="${event}"
+                                                th:text="${event.displayName}"
+                                                th:selected="${product != null && product.eventType == event}">
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="servings">
+                                        <i class="bi bi-people"></i>
+                                        Broj Porcija
+                                    </label>
+                                    <input type="number"
+                                           class="form-control"
+                                           id="servings"
+                                           name="servings"
+                                           th:value="${product != null ? product.servings : ''}"
+                                           min="1"
+                                           placeholder="npr. 20">
+                                    <div class="form-help">Za koliko osoba je proizvod namenjen</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Image Upload -->
+                    <div class="form-card">
+                        <h3 class="form-section-title">
+                            <i class="bi bi-image"></i>
+                            Slika Proizvoda
+                        </h3>
+
+                        <div class="single-image-upload">
+                            <div class="image-upload-container" id="imageUploadArea">
+                                <i class="bi bi-cloud-arrow-up upload-icon"></i>
+                                <div class="upload-text">
+                                    <h6>Kliknite ili prevucite sliku ovde</h6>
+                                    <p>Podržani formati: JPG, PNG, WEBP (max 5MB)</p>
+                                </div>
+                                <input type="file"
+                                       class="file-input"
+                                       id="imageInput"
+                                       name="image"
+                                       accept="image/*">
+                            </div>
+
+                            <!-- Current Image (if editing) -->
+                            <div class="current-image-container" th:if="${product != null && product.imageUrl != null}">
+                                <h6 class="mb-3">
+                                    <i class="bi bi-image me-2"></i>
+                                    Trenutna slika:
+                                </h6>
+                                <div class="single-image-preview">
+                                    <img th:src="${product.imageUrl}" alt="Current Product Image">
+                                    <div class="image-overlay">
+                                        <span class="current-badge">
+                                            <i class="bi bi-check-circle"></i>
+                                            Trenutna slika
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- New Image Preview -->
+                            <div class="image-preview-container" id="imagePreviewContainer" style="display: none;">
+                                <h6 class="mb-3">
+                                    <i class="bi bi-eye me-2"></i>
+                                    Nova slika (pregled):
+                                </h6>
+                                <div class="single-image-preview">
+                                    <img id="previewImage" src="" alt="Preview">
+                                    <button type="button" class="remove-image" onclick="removeImage()">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    <div class="image-overlay">
+                                        <span class="new-badge">
+                                            <i class="bi bi-star-fill"></i>
+                                            Nova slika
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stock & Availability -->
+                    <div class="form-card">
+                        <h3 class="form-section-title">
+                            <i class="bi bi-box"></i>
+                            Dostupnost i Stanje
+                        </h3>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="stock">
+                                        <i class="bi bi-boxes"></i>
+                                        Količina na Stanju
+                                    </label>
+                                    <input type="number"
+                                           class="form-control"
+                                           id="stock"
+                                           name="stock"
+                                           th:value="${product != null ? product.stock : '0'}"
+                                           min="0"
+                                           placeholder="0"
+                                           oninput="updateStockBadge()">
+                                    <div class="form-help">Trenutna količina dostupnih proizvoda</div>
+                                    <div class="mt-3">
+                                        <span class="stock-badge in-stock" id="stockBadge">
+                                            <i class="bi bi-check-circle"></i>
+                                            Na stanju
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>
+                                        <i class="bi bi-toggle-on"></i>
+                                        Status Proizvoda
+                                    </label>
+                                    <div class="switch-container">
+                                        <label class="switch">
+                                            <input type="checkbox"
+                                                   name="isActive"
+                                                   id="isActive"
+                                                   th:checked="${product != null && product.isActive}">
+                                            <span class="slider"></span>
+                                        </label>
+                                        <label class="switch-label" for="isActive">
+                                            <span id="statusLabel" th:text="${product != null && product.isActive ? 'Aktivan' : 'Neaktivan'}">Aktivan</span>
+                                        </label>
+                                    </div>
+                                    <div class="form-help">Aktivni proizvodi su vidljivi kupcima</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Special Features -->
+                    <div class="form-card">
+                        <h3 class="form-section-title">
+                            <i class="bi bi-star"></i>
+                            Dodatne Oznake
+                        </h3>
+
+                        <div class="radio-group">
+                            <div class="radio-item">
+                                <input type="radio" id="badge-none" name="badge" value=""
+                                       th:checked="${product == null || product.badge == null || product.badge == ''}">
+                                <label for="badge-none">Bez oznake</label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="badge-new" name="badge" value="new"
+                                       th:checked="${product != null && product.badge == 'new'}">
+                                <label for="badge-new">
+                                    <i class="bi bi-star-fill text-success"></i> Novo
+                                </label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="badge-popular" name="badge" value="popular"
+                                       th:checked="${product != null && product.badge == 'popular'}">
+                                <label for="badge-popular">
+                                    <i class="bi bi-fire text-warning"></i> Popularno
+                                </label>
+                            </div>
+                            <div class="radio-item">
+                                <input type="radio" id="badge-sale" name="badge" value="sale"
+                                       th:checked="${product != null && product.badge == 'sale'}">
+                                <label for="badge-sale">
+                                    <i class="bi bi-tag-fill text-danger"></i> Sniženo
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="button" class="btn-form btn-cancel" onclick="window.history.back()">
+                            <i class="bi bi-x-circle"></i>
+                            Otkaži
+                        </button>
+                        <button type="submit" class="btn-form btn-save">
+                            <i class="bi bi-check-circle"></i>
+                            <span th:text="${product != null ? 'Sačuvaj Izmene' : 'Dodaj Proizvod'}">Dodaj Proizvod</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Mobile Overlay -->
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<!-- Scripts -->
+<div th:replace="~{layouts/admin :: scripts}"></div>
+
+<script>
+    // Single Image Upload
+    const imageUploadArea = document.getElementById('imageUploadArea');
+    const imageInput = document.getElementById('imageInput');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const previewImage = document.getElementById('previewImage');
+
+    imageUploadArea.addEventListener('click', () => imageInput.click());
+
+    imageUploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        imageUploadArea.classList.add('drag-over');
+    });
+
+    imageUploadArea.addEventListener('dragleave', () => {
+        imageUploadArea.classList.remove('drag-over');
+    });
+
+    imageUploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        imageUploadArea.classList.remove('drag-over');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFile(files[0]);
+        }
+    });
+
+    imageInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            handleFile(e.target.files[0]);
+        }
+    });
+
+    function handleFile(file) {
+        if (file.type.startsWith('image/')) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Slika je prevelika! Maksimalna veličina je 5MB.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                imagePreviewContainer.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            alert('Molimo izaberite validnu sliku (JPG, PNG, WEBP)');
+        }
+    }
+
+    function removeImage() {
+        imageInput.value = '';
+        imagePreviewContainer.style.display = 'none';
+        previewImage.src = '';
+    }
+
+    // Stock Badge Update
+    function updateStockBadge() {
+        const stock = parseInt(document.getElementById('stock').value) || 0;
+        const badge = document.getElementById('stockBadge');
+
+        if (stock === 0) {
+            badge.className = 'stock-badge out-of-stock';
+            badge.innerHTML = '<i class="bi bi-x-circle"></i> Nema na stanju';
+        } else if (stock < 10) {
+            badge.className = 'stock-badge low-stock';
+            badge.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Nisko stanje';
+        } else {
+            badge.className = 'stock-badge in-stock';
+            badge.innerHTML = '<i class="bi bi-check-circle"></i> Na stanju';
+        }
+    }
+
+    // Active Status Toggle
+    document.getElementById('isActive').addEventListener('change', function() {
+        document.getElementById('statusLabel').textContent = this.checked ? 'Aktivan' : 'Neaktivan';
+    });
+
+    // Radio Item Styling
+    document.querySelectorAll('.radio-item input').forEach(input => {
+        input.addEventListener('change', function() {
+            document.querySelectorAll('.radio-item').forEach(item => {
+                item.classList.remove('checked');
+            });
+            if (this.checked) {
+                this.closest('.radio-item').classList.add('checked');
+            }
+        });
+
+        // Set initial checked state
+        if (input.checked) {
+            input.closest('.radio-item').classList.add('checked');
+        }
+    });
+
+    // Form Validation
+    document.getElementById('productForm').addEventListener('submit', function(e) {
+        const requiredFields = this.querySelectorAll('[required]');
+        let isValid = true;
+
+        requiredFields.forEach(field => {
+            if (!field.value) {
+                field.classList.add('is-invalid');
+                isValid = false;
+            } else {
+                field.classList.remove('is-invalid');
+                field.classList.add('is-valid');
+            }
+        });
+
+        if (!isValid) {
+            e.preventDefault();
+            alert('Molimo popunite sva obavezna polja označena sa *');
+        }
+    });
+
+    // Initialize stock badge
+    updateStockBadge();
+</script>
+
+</body>
+</html>
