@@ -56,6 +56,7 @@ public class ProductService {
         newProduct.setName(product.getName());
         newProduct.setPrice(product.getPrice());
         newProduct.setQuantity(product.getQuantity());
+        newProduct.setServings(product.getServings());
         newProduct.setDescription(product.getDescription());
         newProduct.setActive(product.isActive());
         newProduct.setProductType(product.getProductType());
