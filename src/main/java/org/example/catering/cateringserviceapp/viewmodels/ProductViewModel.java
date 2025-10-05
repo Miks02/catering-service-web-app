@@ -18,6 +18,8 @@ public class ProductViewModel {
     @NotNull(message = "Unesite sliku proizvoda")
     private MultipartFile imageFile;
 
+    private String imagePath;
+
     @Positive(message = "Cena mora biti veća od 0 RSD")
     private double price;
 
@@ -27,10 +29,29 @@ public class ProductViewModel {
     @NotBlank(message = "Unesite tip proslave")
     private String eventType;
 
+    @Min(value = 1, message = "Najmanji broj porcija je 1")
+    private int servings = 1;
+
     @Min(value = 0, message = "Količina ne može biti manja od 0")
     private int quantity = 0;
 
     private boolean active = false;
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public int getServings() {
+        return servings;
+    }
+
+    public void setServings(int servings) {
+        this.servings = servings;
+    }
 
     public String getDescription() {
         return description;
