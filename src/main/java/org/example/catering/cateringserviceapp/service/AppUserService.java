@@ -13,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+
 @Service
 public class AppUserService implements UserDetailsService {
 
@@ -53,6 +55,23 @@ public class AppUserService implements UserDetailsService {
 
         userRepo.save(user);
 
+
+    }
+
+    public void seedUser(AppUser user) {
+
+        var existingUser = userRepo.findUserByUsername(user.getUsername());
+
+        if(existingUser.isPresent()) {
+            System.out.println("Seedovanje se prekida, korisnik već postoji");
+            return;
+        }
+
+
+        user.setCreatedAt(new Date(System.currentTimeMillis()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        userRepo.save(user);
 
     }
 
