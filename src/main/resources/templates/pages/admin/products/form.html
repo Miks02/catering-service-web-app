@@ -4,12 +4,9 @@
 <body>
 
 <div class="admin-wrapper">
-    <!-- Sidebar -->
     <aside th:replace="~{layouts/admin :: adminSidebar}"></aside>
 
-    <!-- Main Content -->
     <div class="admin-content">
-        <!-- Topbar -->
         <header class="admin-topbar">
             <button type="button" class="topbar-mobile-toggle" id="mobileToggle">
                 <i class="bi bi-list"></i>
@@ -17,7 +14,7 @@
 
             <h1 class="topbar-title">
                 <i class="bi bi-box-seam"></i>
-                <span th:text="${product != null ? 'Izmeni Proizvod' : 'Dodaj Novi Proizvod'}">Dodaj Novi Proizvod</span>
+                <span th:text="${vm.id != null ? 'Izmeni Proizvod' : 'Dodaj Novi Proizvod'}">Dodaj Novi Proizvod</span>
             </h1>
 
             <div class="topbar-actions">
@@ -37,15 +34,16 @@
 
         <main class="admin-main">
             <div class="form-container">
-                <form th:action="@{/admin/products/save}" method="post" enctype="multipart/form-data" id="productForm">
-                    <input type="hidden" name="id" th:value="${product != null ? product.id : ''}">
+                <form th:action="@{/admin/products/save}" method="post" enctype="multipart/form-data" id="productForm" th:object="${vm}">
+                    <input type="hidden" name="id" th:value="${vm == null ? vm.id : ''}">
 
                     <div class="form-card">
                         <h3 class="form-section-title">
                             <i class="bi bi-info-circle"></i>
                             Osnovne Informacije
                         </h3>
-
+                        <div th:replace="layouts/alerts :: alert(${errorMessage}, 'danger')"></div>
+                        <div th:replace="layouts/alerts :: alert(${successMessage}, 'primary')"></div>
                         <div class="row">
                             <div class="col-md-8">
                                 <div class="form-group">
@@ -58,13 +56,14 @@
                                            class="form-control"
                                            id="name"
                                            name="name"
-                                           th:value="${product != null ? product.name : ''}"
+                                           th:field="${vm.name}"
                                            placeholder="npr. Svečana Torta Deluxe"
-                                           required>
-                                    <div class="invalid-feedback">
-                                        <i class="bi bi-exclamation-circle"></i>
-                                        Molimo unesite naziv proizvoda
+                                           >
+                                    <div th:if="${#fields.hasErrors('name')}"
+                                         th:errors="*{name}"
+                                         class="invalid-feedback required">
                                     </div>
+
                                 </div>
                             </div>
 
@@ -80,14 +79,17 @@
                                                class="form-control"
                                                id="price"
                                                name="price"
-                                               th:value="${product != null ? product.price : ''}"
+                                               th:value="${vm != null ? vm.price : ''}"
                                                min="0"
                                                step="100"
                                                placeholder="0"
-                                               required>
+                                               >
                                         <span class="currency-symbol">RSD</span>
                                     </div>
-                                    <div class="form-help">Unesite cenu u dinarima</div>
+                                    <div th:if="${#fields.hasErrors('price')}"
+                                         th:errors="*{price}"
+                                         class="invalid-feedback required">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -101,10 +103,14 @@
                             <textarea class="form-textarea"
                                       id="description"
                                       name="description"
-                                      th:text="${product != null ? product.description : ''}"
+                                      th:text="${vm != null ? vm.description : ''}"
                                       placeholder="Detaljan opis proizvoda..."
-                                      required></textarea>
+                                      ></textarea>
                             <div class="form-help">Opišite proizvod detaljno (sastojci, porcije, itd.)</div>
+                            <div th:if="${#fields.hasErrors('description')}"
+                                 th:errors="*{description}"
+                                 class="invalid-feedback required">
+                            </div>
                         </div>
 
                         <div class="row">
@@ -115,14 +121,18 @@
                                         Tip Proizvoda
                                         <span class="required">*</span>
                                     </label>
-                                    <select class="form-select" id="productType" name="productType" required>
+                                    <select class="form-select" id="productType" name="productType" >
                                         <option value="" disabled selected>Izaberite tip proizvoda</option>
                                         <option th:each="type : ${T(org.example.catering.cateringserviceapp.enums.ProductType).values()}"
                                                 th:value="${type}"
                                                 th:text="${type.displayName}"
-                                                th:selected="${product != null && product.productType == type}">
+                                                th:selected="${vm != null && vm.productType == type}">
                                         </option>
                                     </select>
+                                    <div th:if="${#fields.hasErrors('productType')}"
+                                         th:errors="*{productType}"
+                                         class="invalid-feedback required">
+                                    </div>
                                 </div>
                             </div>
 
@@ -133,14 +143,18 @@
                                         Tip Događaja
                                         <span class="required">*</span>
                                     </label>
-                                    <select class="form-select" id="eventType" name="eventType" required>
+                                    <select class="form-select" id="eventType" name="eventType" >
                                         <option value="" disabled selected>Izaberite tip događaja</option>
                                         <option th:each="event : ${T(org.example.catering.cateringserviceapp.enums.EventType).values()}"
                                                 th:value="${event}"
                                                 th:text="${event.displayName}"
-                                                th:selected="${product != null && product.eventType == event}">
+                                                th:selected="${vm != null && vm.eventType == event}">
                                         </option>
                                     </select>
+                                    <div th:if="${#fields.hasErrors('eventType')}"
+                                         th:errors="*{eventType}"
+                                         class="invalid-feedback required">
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -148,21 +162,24 @@
                                     <label for="servings">
                                         <i class="bi bi-people"></i>
                                         Broj Porcija
+                                        <span class="required">*</span>
                                     </label>
+
                                     <input type="number"
                                            class="form-control"
                                            id="servings"
                                            name="servings"
-                                           th:value="${product != null ? product.servings : ''}"
-                                           min="1"
+                                           th:field="${vm.servings}"
                                            placeholder="npr. 20">
-                                    <div class="form-help">Za koliko osoba je proizvod namenjen</div>
+                                    <div th:if="${#fields.hasErrors('servings')}"
+                                         th:errors="*{servings}"
+                                         class="invalid-feedback required">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Image Upload -->
                     <div class="form-card">
                         <h3 class="form-section-title">
                             <i class="bi bi-image"></i>
@@ -178,19 +195,23 @@
                                 </div>
                                 <input type="file"
                                        class="file-input"
+                                       th:field="${vm.imageFile}"
                                        id="imageInput"
                                        name="image"
                                        accept="image/*">
+                                <div th:if="${#fields.hasErrors('imageFile')}"
+                                     th:errors="*{imageFile}"
+                                     class="invalid-feedback required fw-bold">
+                                </div>
                             </div>
 
-                            <!-- Current Image (if editing) -->
-                            <div class="current-image-container" th:if="${product != null && product.imageUrl != null}">
+                            <div class="current-image-container" th:if="${vm != null && vm.imagePath != null}">
                                 <h6 class="mb-3">
                                     <i class="bi bi-image me-2"></i>
                                     Trenutna slika:
                                 </h6>
                                 <div class="single-image-preview">
-                                    <img th:src="${product.imageUrl}" alt="Current Product Image">
+                                    <img th:src="${vm.imagePath}" alt="Trenutna slika proizvoda">
                                     <div class="image-overlay">
                                         <span class="current-badge">
                                             <i class="bi bi-check-circle"></i>
@@ -200,7 +221,6 @@
                                 </div>
                             </div>
 
-                            <!-- New Image Preview -->
                             <div class="image-preview-container" id="imagePreviewContainer" style="display: none;">
                                 <h6 class="mb-3">
                                     <i class="bi bi-eye me-2"></i>
@@ -222,7 +242,6 @@
                         </div>
                     </div>
 
-                    <!-- Stock & Availability -->
                     <div class="form-card">
                         <h3 class="form-section-title">
                             <i class="bi bi-box"></i>
@@ -240,7 +259,7 @@
                                            class="form-control"
                                            id="stock"
                                            name="stock"
-                                           th:value="${product != null ? product.stock : '0'}"
+                                           th:field="${vm.quantity}"
                                            min="0"
                                            placeholder="0"
                                            oninput="updateStockBadge()">
@@ -263,13 +282,15 @@
                                     <div class="switch-container">
                                         <label class="switch">
                                             <input type="checkbox"
-                                                   name="isActive"
-                                                   id="isActive"
-                                                   th:checked="${product != null && product.isActive}">
+                                                   name="active"
+                                                   id="active"
+                                                   th:checked="${vm != null && vm.active}"
+                                                   th:field="${vm.active}">>
+
                                             <span class="slider"></span>
                                         </label>
-                                        <label class="switch-label" for="isActive">
-                                            <span id="statusLabel" th:text="${product != null && product.isActive ? 'Aktivan' : 'Neaktivan'}">Aktivan</span>
+                                        <label class="switch-label" for="active">
+                                            <span id="statusLabel" th:text="${vm != null && vm.active ? 'Aktivan' : 'Neaktivan'}">Aktivan</span>
                                         </label>
                                     </div>
                                     <div class="form-help">Aktivni proizvodi su vidljivi kupcima</div>
@@ -278,44 +299,8 @@
                         </div>
                     </div>
 
-                    <!-- Special Features -->
-                    <div class="form-card">
-                        <h3 class="form-section-title">
-                            <i class="bi bi-star"></i>
-                            Dodatne Oznake
-                        </h3>
 
-                        <div class="radio-group">
-                            <div class="radio-item">
-                                <input type="radio" id="badge-none" name="badge" value=""
-                                       th:checked="${product == null || product.badge == null || product.badge == ''}">
-                                <label for="badge-none">Bez oznake</label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" id="badge-new" name="badge" value="new"
-                                       th:checked="${product != null && product.badge == 'new'}">
-                                <label for="badge-new">
-                                    <i class="bi bi-star-fill text-success"></i> Novo
-                                </label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" id="badge-popular" name="badge" value="popular"
-                                       th:checked="${product != null && product.badge == 'popular'}">
-                                <label for="badge-popular">
-                                    <i class="bi bi-fire text-warning"></i> Popularno
-                                </label>
-                            </div>
-                            <div class="radio-item">
-                                <input type="radio" id="badge-sale" name="badge" value="sale"
-                                       th:checked="${product != null && product.badge == 'sale'}">
-                                <label for="badge-sale">
-                                    <i class="bi bi-tag-fill text-danger"></i> Sniženo
-                                </label>
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Form Actions -->
                     <div class="form-actions">
                         <button type="button" class="btn-form btn-cancel" onclick="window.history.back()">
                             <i class="bi bi-x-circle"></i>
@@ -323,7 +308,7 @@
                         </button>
                         <button type="submit" class="btn-form btn-save">
                             <i class="bi bi-check-circle"></i>
-                            <span th:text="${product != null ? 'Sačuvaj Izmene' : 'Dodaj Proizvod'}">Dodaj Proizvod</span>
+                            <span th:text="${vm.id != null ? 'Sačuvaj Izmene' : 'Dodaj Proizvod'}">Dodaj Proizvod</span>
                         </button>
                     </div>
                 </form>
@@ -332,14 +317,11 @@
     </div>
 </div>
 
-<!-- Mobile Overlay -->
 <div class="mobile-overlay" id="mobileOverlay"></div>
 
-<!-- Scripts -->
 <div th:replace="~{layouts/admin :: scripts}"></div>
 
 <script>
-    // Single Image Upload
     const imageUploadArea = document.getElementById('imageUploadArea');
     const imageInput = document.getElementById('imageInput');
     const imagePreviewContainer = document.getElementById('imagePreviewContainer');
@@ -395,7 +377,6 @@
         previewImage.src = '';
     }
 
-    // Stock Badge Update
     function updateStockBadge() {
         const stock = parseInt(document.getElementById('stock').value) || 0;
         const badge = document.getElementById('stockBadge');
@@ -412,12 +393,10 @@
         }
     }
 
-    // Active Status Toggle
-    document.getElementById('isActive').addEventListener('change', function() {
+    document.getElementById('active').addEventListener('change', function() {
         document.getElementById('statusLabel').textContent = this.checked ? 'Aktivan' : 'Neaktivan';
     });
 
-    // Radio Item Styling
     document.querySelectorAll('.radio-item input').forEach(input => {
         input.addEventListener('change', function() {
             document.querySelectorAll('.radio-item').forEach(item => {
@@ -428,13 +407,11 @@
             }
         });
 
-        // Set initial checked state
         if (input.checked) {
             input.closest('.radio-item').classList.add('checked');
         }
     });
 
-    // Form Validation
     document.getElementById('productForm').addEventListener('submit', function(e) {
         const requiredFields = this.querySelectorAll('[required]');
         let isValid = true;
@@ -455,7 +432,6 @@
         }
     });
 
-    // Initialize stock badge
     updateStockBadge();
 </script>
 
