@@ -67,8 +67,9 @@ public class AccountController {
             user.setCreatedAt(new Date(System.currentTimeMillis()));
 
             userService.registerUser(user);
-            userService.loadUserByUsername(user.getUsername());
 
+            redirectAttributes.addFlashAttribute("successMessage", "Uspešna registracija!");
+            return "redirect:/public/register";
         }
         catch(UserAlreadyExistsException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
@@ -80,7 +81,6 @@ public class AccountController {
         }
 
 
-        return "redirect:/public";
 
 
 
