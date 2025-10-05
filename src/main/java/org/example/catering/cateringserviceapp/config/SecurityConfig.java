@@ -27,7 +27,12 @@ public class SecurityConfig {
                         .loginProcessingUrl("/public/login")
                         .defaultSuccessUrl("/public")
                         .failureUrl("/public/login?error=true"))
-                .logout(Customizer.withDefaults());
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/public/login")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID"));
+
 
         return http.build();
     }
