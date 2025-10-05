@@ -32,21 +32,26 @@ public class ProductController {
     }
 
     @GetMapping("/form")
-    public String getProductForm() {
+    public String getProductForm(Model model) {
+
+        model.addAttribute("vm", new ProductViewModel());
+
         return "pages/admin/products/form";
     }
 
     @PostMapping("/save")
-    public String saveProduct(@Valid @ModelAttribute ProductViewModel vm,
+    public String saveProduct(@Valid @ModelAttribute("vm") ProductViewModel vm,
                               BindingResult bindingResult,
                               Model model,
                               RedirectAttributes redirectAttributes) {
 
         if(vm.getImageFile().isEmpty()) {
+
             bindingResult.addError(new FieldError("vm", "imageFile", "Slika je obavezna!."));
         }
 
         if(bindingResult.hasErrors()) {
+            model.addAttribute("vm", vm);
             return "pages/admin/products/form";
         }
 
@@ -56,6 +61,7 @@ public class ProductController {
         product.setName(vm.getName());
         product.setPrice(vm.getPrice());
         product.setQuantity(vm.getQuantity());
+        product.setServings(vm.getServings());
         product.setDescription(vm.getDescription());
         product.setActive(vm.isActive());
         product.setProductType(ProductType.valueOf(vm.getProductType()));
@@ -65,22 +71,22 @@ public class ProductController {
 
         try {
             productService.save(product,  imageFile);
-            redirectAttributes.addFlashAttribute("success", "Proizvod je uspešno sačuvan.");
+            redirectAttributes.addFlashAttribute("successMessage", "Proizvod je uspešno sačuvan.");
             return "redirect:/admin/products/form";
         }
         catch(IOException e) {
             System.out.println("GREŠKA! " + e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "Greška prilikom čuvanja slike proizvoda");
+            redirectAttributes.addFlashAttribute("errorMessage", "Greška prilikom čuvanja slike proizvoda");
             return "redirect:/admin/products/form";
         }
         catch (IllegalArgumentException e) {
             System.out.println("GREŠKA! " + e.getMessage());
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/admin/products/form";
         }
         catch (Exception e) {
             System.out.println("GREŠKA! " + e.getMessage());
-            redirectAttributes.addFlashAttribute("error", "Došlo je do greške prilikom dodavanja proizvoda, pokušajte ponovo kasnije...");
+            redirectAttributes.addFlashAttribute("errorMessage", "Došlo je do greške prilikom dodavanja proizvoda, pokušajte ponovo kasnije...");
             return "redirect:/admin/products/form";
         }
 
