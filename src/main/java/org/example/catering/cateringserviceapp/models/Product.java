@@ -27,6 +27,8 @@ public class Product {
 
     private int timesBought = 0;
 
+    private int servings = 1;
+
     private int quantity = 0;
 
     private boolean active = false;
@@ -37,6 +39,14 @@ public class Product {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getServings() {
+        return servings;
+    }
+
+    public void setServings(int servings) {
+        this.servings = servings;
     }
 
     public Long getId() {
