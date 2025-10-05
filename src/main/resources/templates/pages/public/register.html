@@ -21,11 +21,16 @@
                                 <p class="text-white">Unesite vaše podatke</p>
                             </div>
 
-                            <form th:action="@{/login}" method="post">
+                            <form th:action="@{/public/register}" method="post" th:object="${registerVm}">
                                 <div th:if="${param.error}" class="alert alert-danger alert-dismissible fade show" role="alert">
                                     <i class="bi bi-exclamation-triangle-fill me-2"></i>
                                     <strong>Greška!</strong> Došlo je do greške prilikom registracije.
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    <span th:text="${errorMessage}"></span>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                                 </div>
 
                                 <div th:if="${param.logout}" class="alert alert-success alert-dismissible fade show" role="alert">
@@ -43,9 +48,12 @@
                                                class="form-control form-control-lg"
                                                id="firstName"
                                                name="firstName"
+                                               th:field="*{firstName}"
                                                placeholder="Unesite ime"
-                                               required
+
                                                autofocus>
+                                        <span th:if="${#fields.hasErrors('firstName')}"
+                                              th:errors="*{firstName}" class="text-danger fw-bolder"></span>
                                     </div>
 
                                     <div class="mb-3">
@@ -57,9 +65,12 @@
                                                class="form-control form-control-lg"
                                                id="lastName"
                                                name="lastName"
+                                               th:field="*{lastName}"
                                                placeholder="Unesite prezime"
-                                               required
+
                                                autofocus>
+                                        <span th:if="${#fields.hasErrors('lastName')}"
+                                              th:errors="*{lastName}" class="text-danger fw-bolder"></span>
                                     </div>
                                 </div>
 
@@ -73,10 +84,11 @@
                                                class="form-control form-control-lg"
                                                id="username"
                                                name="username"
+                                               th:field="*{username}"
                                                placeholder="Korisničko ime"
-                                               required
-                                               autofocus
-                                        >
+                                               autofocus>
+                                        <span th:if="${#fields.hasErrors('username')}"
+                                              th:errors="*{username}" class="text-danger fw-bolder"></span>
                                     </div>
 
                                     <div class="mb-3">
@@ -88,9 +100,12 @@
                                                class="form-control form-control-lg"
                                                id="email"
                                                name="email"
+                                               th:field="*{email}"
                                                placeholder="Unesite email adresu"
-                                               required
+
                                                autofocus>
+                                        <span th:if="${#fields.hasErrors('email')}"
+                                              th:errors="*{email}" class="text-danger fw-bolder"></span>
                                     </div>
                                 </div>
 
@@ -106,8 +121,11 @@
                                                class="form-control form-control-lg"
                                                id="password"
                                                name="password"
+                                               th:field="*{password}"
                                                placeholder="Unesite lozinku"
-                                               required>
+                                               >
+                                        <span th:if="${#fields.hasErrors('password')}"
+                                              th:errors="*{password}" class="text-danger fw-bolder"></span>
                                     </div>
 
                                     <div class="mb-4">
@@ -119,8 +137,11 @@
                                                class="form-control form-control-lg"
                                                id="confirmPassword"
                                                name="confirmPassword"
+                                               th:field="*{confirmPassword}"
                                                placeholder="Potvrdite lozinku"
-                                               required>
+                                               >
+                                        <span th:if="${#fields.hasErrors('confirmPassword')}"
+                                              th:errors="*{confirmPassword}" class="text-danger fw-bolder"></span>
                                     </div>
                                 </div>
 
