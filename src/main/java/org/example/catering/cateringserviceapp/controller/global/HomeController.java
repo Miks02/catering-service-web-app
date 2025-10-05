@@ -21,6 +21,9 @@ public class HomeController {
         return "pages/public/index";
     }
 
-
+    @GetMapping("/public/about")
+    public String about() {
+        return "pages/public/about";
+    }
 
 }

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org" th:with="pageTitle='O nama', heroTitle='O nama', heroSubtitle='Upoznajte naš tim i našu priču', showHeroButtons=false">
+<head th:replace="~{layouts/base :: head}"></head>
+<body>
+
+<div th:replace="~{layouts/base :: navbar}"></div>
+
+<section class="hero-section mini-hero p-5">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <div class="container text-center text-white">
+            <h1 class="display-5 fw-bold mb-2" th:text="${heroTitle}">O nama</h1>
+            <p class="lead mb-0" th:text="${heroSubtitle}"></p>
+        </div>
+    </div>
+</section>
+
+<main th:replace="~{layouts/base :: mainContent}">
+    <th:block th:fragment="content">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <h2 class="fw-bold mb-3 text-success">Naša misija</h2>
+                        <p class="text-muted mb-0">
+                            Naša ketering služba postoji sa jasnim ciljem: da svaki događaj učinimo nezaboravnim. Verujemo u kvalitet,
+                            posvećenost i autentične ukuse koji osvajaju na prvi zalogaj. Sa više od 10 godina iskustva, pružamo
+                            personalizovane menije i vrhunsku uslugu za sve prilike – od intimnih okupljanja do velikih korporativnih
+                            događaja.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body p-4">
+                                <h3 class="fw-semibold text-success mb-3">Zašto nas biraju</h3>
+                                <ul class="text-muted mb-0">
+                                    <li>Svaki meni prilagođavamo vašim željama i potrebama.</li>
+                                    <li>Koristimo isključivo sveže i kvalitetne sastojke.</li>
+                                    <li>Profesionalna i ljubazna usluga na najvišem nivou.</li>
+                                    <li>Iskustvo u organizaciji različitih tipova događaja.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body p-4">
+                                <h3 class="fw-semibold text-success mb-3">Naše vrednosti</h3>
+                                <p class="text-muted mb-0">
+                                    Poštujemo tradiciju, ali i pratimo moderne kulinarske trendove. Naša kuhinja je spoj ukusa,
+                                    kreativnosti i profesionalizma – a zadovoljstvo klijenata nam je uvek na prvom mestu.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </th:block>
+</main>
+
+<div th:replace="~{layouts/base :: footer}"></div>
+<div th:replace="~{layouts/base :: scripts}"></div>
+
+</body>
+</html>
