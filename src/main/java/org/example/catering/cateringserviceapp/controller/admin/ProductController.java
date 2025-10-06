@@ -6,15 +6,15 @@ import org.example.catering.cateringserviceapp.enums.ProductType;
 import org.example.catering.cateringserviceapp.models.Product;
 import org.example.catering.cateringserviceapp.service.ProductService;
 import org.example.catering.cateringserviceapp.viewmodels.ProductViewModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -29,6 +29,22 @@ public class ProductController {
 
     public ProductController(ProductService productService) {
         this.productService = productService;
+    }
+
+    @GetMapping("/list")
+    public String listProducts(@RequestParam(defaultValue = "1") int page,
+                               @RequestParam(defaultValue = "10") int pageSize,
+                               Model model) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Page<Product> productPage = productService.getAllProducts(pageable);
+
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("totalItems", productPage.getTotalElements());
+        model.addAttribute("pageSize", pageSize);
+
+        return "pages/admin/products/list";
     }
 
     @GetMapping("/form")
@@ -90,5 +106,20 @@ public class ProductController {
             return "redirect:/admin/products/form";
         }
 
+    }
+
+    @GetMapping("/list/delete/{id}")
+    public String deleteProduct(
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            productService.deleteProduct(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Proizvod je uspešno obrisan!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Greška pri brisanju proizvoda: " + e.getMessage());
+        }
+
+        return "redirect:/admin/products/list";
     }
 }
