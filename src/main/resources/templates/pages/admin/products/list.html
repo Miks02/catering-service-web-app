@@ -226,7 +226,7 @@
         <i class="bi bi-check-circle-fill"></i>
         <div class="toast-content">
             <h6>Uspešno!</h6>
-            <p>Proizvod je uspešno obrisan</p>
+            <p th:text="${successMessage}"></p>
         </div>
         <button class="btn-close-toast" onclick="this.parentElement.remove()">
             <i class="bi bi-x"></i>
@@ -238,7 +238,7 @@
         <i class="bi bi-exclamation-octagon"></i>
         <div class="toast-content">
             <h6>Greška!</h6>
-            <p>Došlo je do greške prilikom brisanja proizvoda</p>
+            <p th:text="${errorMessage}"></p>
         </div>
         <button class="btn-close-toast" onclick="this.parentElement.remove()">
             <i class="bi bi-x"></i>

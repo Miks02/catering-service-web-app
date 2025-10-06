@@ -82,23 +82,28 @@ public class ProductController {
     }
 
     @PostMapping("/save")
-    public String saveProduct(@Valid @ModelAttribute("vm") ProductViewModel vm,
-                              BindingResult bindingResult,
-                              Model model,
-                              RedirectAttributes redirectAttributes) {
+    public String saveProduct(
+            @Valid @ModelAttribute("vm") ProductViewModel vm,
+            BindingResult bindingResult,
+            Model model,
+            RedirectAttributes redirectAttributes) {
 
-        if(vm.getImageFile().isEmpty()) {
+        MultipartFile imageFile = vm.getImageFile();
 
-            bindingResult.addError(new FieldError("vm", "imageFile", "Slika je obavezna!."));
+        if (vm.getId() == null && (imageFile == null || imageFile.isEmpty())) {
+            bindingResult.addError(new FieldError("vm", "imageFile", "Slika je obavezna!"));
         }
 
-        if(bindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             model.addAttribute("vm", vm);
             return "pages/admin/products/form";
         }
 
-        var product = new Product();
+        if (imageFile != null && !imageFile.isEmpty()) {
+            vm.setImagePath(null);
+        }
 
+        Product product = new Product();
         product.setId(vm.getId());
         product.setName(vm.getName());
         product.setPrice(vm.getPrice());
@@ -111,30 +116,20 @@ public class ProductController {
 
         AppLogger.info("Proizvod se šalje u servis: " + product.getId());
 
-        MultipartFile  imageFile = vm.getImageFile();
-
         try {
-            productService.save(product,  imageFile);
+            productService.save(product, imageFile);
             redirectAttributes.addFlashAttribute("successMessage", "Proizvod je uspešno sačuvan.");
-            return "redirect:/admin/products/form";
-        }
-        catch(IOException e) {
-            System.out.println("GREŠKA! " + e.getMessage());
-            redirectAttributes.addFlashAttribute("errorMessage", "Greška prilikom čuvanja slike proizvoda");
-            return "redirect:/admin/products/form";
-        }
-        catch (IllegalArgumentException e) {
-            System.out.println("GREŠKA! " + e.getMessage());
+        } catch (IOException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Greška prilikom čuvanja slike proizvoda.");
+        } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/admin/products/form";
-        }
-        catch (Exception e) {
-            System.out.println("GREŠKA! " + e.getMessage());
+        } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Došlo je do greške prilikom dodavanja proizvoda, pokušajte ponovo kasnije...");
-            return "redirect:/admin/products/form";
         }
 
+        return "redirect:/admin/products/list";
     }
+
 
     @GetMapping("/list/delete/{id}")
     public String deleteProduct(
