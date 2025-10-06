@@ -1,10 +1,14 @@
 package org.example.catering.cateringserviceapp.service;
 
+import org.example.catering.cateringserviceapp.helpers.AppLogger;
 import org.example.catering.cateringserviceapp.models.Product;
 import org.example.catering.cateringserviceapp.repository.ProductRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -28,10 +32,12 @@ public class ProductService {
         Product newProduct;
 
         if(product.getId() != null){
-           newProduct = productRepository.findProductById(product.getId())
-                    .orElseThrow(() -> new IllegalArgumentException("Traženi proizvod " + product.getId() + " ne postoji"));
+            AppLogger.info("Ažuriranje proizvoda ");
+            newProduct = productRepository.findProductById(product.getId())
+                        .orElseThrow(() -> new IllegalArgumentException("Traženi proizvod " + product.getId() + " ne postoji"));
         }
         else {
+            AppLogger.info("Dodavanje proizvoda");
             newProduct = new Product();
         }
 
@@ -65,8 +71,8 @@ public class ProductService {
         productRepository.save(newProduct);
     }
 
-    public Optional<List<Product>> findAll() {
-        return Optional.of(productRepository.findAll());
+    public Page<Product> getAllProducts(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 
     public Optional<Product> findById(Long id) {
@@ -75,6 +81,10 @@ public class ProductService {
 
     public Optional<Product> findByName(String name) {
         return productRepository.findProductByName(name);
+    }
+
+    public void deleteProduct(Long id) {
+        productRepository.deleteProductById(id);
     }
 
 
