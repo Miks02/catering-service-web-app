@@ -2,6 +2,7 @@ package org.example.catering.cateringserviceapp.models;
 
 import jakarta.persistence.*;
 import org.example.catering.cateringserviceapp.enums.Role;
+import org.springframework.format.annotation.NumberFormat;
 
 import java.sql.Date;
 
@@ -21,6 +22,15 @@ public class AppUser {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(nullable = true)
+    private String phone;
+
+    @Column(nullable = true)
+    private String imagePath;
+
+    @Column(nullable = true)
+    private String address;
+
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -32,6 +42,30 @@ public class AppUser {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     private int rewardPoints = 0;
