@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 
 public class EmployeeViewModel {
 
-    private int id;
+    private Long id;
     @NotEmpty(message = "Ime je obavezno")
     private String firstName;
 
@@ -38,11 +38,11 @@ public class EmployeeViewModel {
     @NotEmpty(message = "Potvrdite lozinku")
     private String confirmPassword;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
