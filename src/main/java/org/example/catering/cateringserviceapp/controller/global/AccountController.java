@@ -1,6 +1,7 @@
 package org.example.catering.cateringserviceapp.controller.global;
 
 import jakarta.validation.Valid;
+import org.example.catering.cateringserviceapp.enums.Role;
 import org.example.catering.cateringserviceapp.exceptions.UserAlreadyExistsException;
 import org.example.catering.cateringserviceapp.models.AppUser;
 import org.example.catering.cateringserviceapp.service.AppUserService;
@@ -66,7 +67,7 @@ public class AccountController {
             user.setLastName(registerVm.getLastName());
             user.setCreatedAt(new Date(System.currentTimeMillis()));
 
-            userService.registerUser(user);
+            userService.registerUser(user, Role.CLIENT);
 
             redirectAttributes.addFlashAttribute("successMessage", "Uspešna registracija!");
             return "redirect:/public/register";

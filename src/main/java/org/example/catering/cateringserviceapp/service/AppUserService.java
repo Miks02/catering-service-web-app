@@ -42,7 +42,7 @@ public class AppUserService implements UserDetailsService {
 
     }
 
-    public void registerUser(AppUser user) {
+    public void registerUser(AppUser user, Role role) {
 
         if(userRepo.findUserByUsername(user.getUsername()).isPresent())
             throw new UserAlreadyExistsException("Navedeno korisničko ime je zauzeto");
@@ -51,7 +51,7 @@ public class AppUserService implements UserDetailsService {
             throw new UserAlreadyExistsException("Navedena email adresa je zauzeta");
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRole(Role.CLIENT);
+        user.setRole(role);
 
         userRepo.save(user);
 
