@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.Optional;
 
 @Service
 public class AppUserService implements UserDetailsService {
@@ -73,6 +74,10 @@ public class AppUserService implements UserDetailsService {
 
         userRepo.save(user);
 
+    }
+
+    public Optional<AppUser> getUserById(Long id) {
+        return userRepo.findById(id);
     }
 
 
