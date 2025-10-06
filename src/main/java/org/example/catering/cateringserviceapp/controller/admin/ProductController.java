@@ -3,6 +3,7 @@ package org.example.catering.cateringserviceapp.controller.admin;
 import jakarta.validation.Valid;
 import org.example.catering.cateringserviceapp.enums.EventType;
 import org.example.catering.cateringserviceapp.enums.ProductType;
+import org.example.catering.cateringserviceapp.helpers.AppLogger;
 import org.example.catering.cateringserviceapp.models.Product;
 import org.example.catering.cateringserviceapp.service.ProductService;
 import org.example.catering.cateringserviceapp.viewmodels.ProductViewModel;
@@ -48,9 +49,34 @@ public class ProductController {
     }
 
     @GetMapping("/form")
-    public String getProductForm(Model model) {
+    public String getProductForm(Model model, @RequestParam(required = false) Long id) {
+        var vm = new ProductViewModel();
 
-        model.addAttribute("vm", new ProductViewModel());
+        if(id != null) {
+            AppLogger.info("Izvlačenje proizvoda sa ID: " + id);
+
+            var product = productService.findById(id);
+
+            if(product.isEmpty()) {
+                AppLogger.error("Ne postoji proizvoda sa ID: " + id);
+                AppLogger.info("Preusmeravanje korisnika na formu za dodavanje proizvoda...");
+                return "pages/admin/products/form";
+            }
+
+            vm.setName(product.get().getName());
+            vm.setPrice(product.get().getPrice());
+            vm.setQuantity(product.get().getQuantity());
+            vm.setServings(product.get().getServings());
+            vm.setActive(product.get().isActive());
+            vm.setId(product.get().getId());
+            vm.setImagePath(product.get().getImagePath());
+            vm.setDescription(product.get().getDescription());
+            vm.setProductType(product.get().getProductType().getDisplayName());
+            vm.setEventType(product.get().getEventType().getDisplayName());
+
+        }
+
+        model.addAttribute("vm", vm);
 
         return "pages/admin/products/form";
     }
@@ -82,6 +108,8 @@ public class ProductController {
         product.setActive(vm.isActive());
         product.setProductType(ProductType.valueOf(vm.getProductType()));
         product.setEventType(EventType.valueOf(vm.getEventType()));
+
+        AppLogger.info("Proizvod se šalje u servis: " + product.getId());
 
         MultipartFile  imageFile = vm.getImageFile();
 
