@@ -35,7 +35,7 @@
         <main class="admin-main">
             <div class="form-container">
                 <form th:action="@{/admin/products/save}" method="post" enctype="multipart/form-data" id="productForm" th:object="${vm}">
-                    <input type="hidden" name="id" th:value="${vm == null ? vm.id : ''}">
+                    <input type="hidden" name="id" th:field="${vm.id}">
 
                     <div class="form-card">
                         <h3 class="form-section-title">
@@ -126,7 +126,7 @@
                                         <option th:each="type : ${T(org.example.catering.cateringserviceapp.enums.ProductType).values()}"
                                                 th:value="${type}"
                                                 th:text="${type.displayName}"
-                                                th:selected="${vm != null && vm.productType == type}">
+                                                th:selected="${vm != null && vm.productType == type.displayName}">
                                         </option>
                                     </select>
                                     <div th:if="${#fields.hasErrors('productType')}"
@@ -148,7 +148,7 @@
                                         <option th:each="event : ${T(org.example.catering.cateringserviceapp.enums.EventType).values()}"
                                                 th:value="${event}"
                                                 th:text="${event.displayName}"
-                                                th:selected="${vm != null && vm.eventType == event}">
+                                                th:selected="${vm != null && vm.eventType == event.displayName}">
                                         </option>
                                     </select>
                                     <div th:if="${#fields.hasErrors('eventType')}"
