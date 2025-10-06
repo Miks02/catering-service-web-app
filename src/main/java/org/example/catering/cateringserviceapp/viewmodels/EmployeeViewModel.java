@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 public class EmployeeViewModel {
 
@@ -29,7 +30,7 @@ public class EmployeeViewModel {
             message = "Unesite validan broj telefona")
     private String phone;
 
-    private String imageFile;
+    private MultipartFile imageFile;
 
     private String imagePath;
 
@@ -62,11 +63,11 @@ public class EmployeeViewModel {
         this.address = address;
     }
 
-    public String getImageFile() {
+    public MultipartFile getImageFile() {
         return imageFile;
     }
 
-    public void setImageFile(String imageFile) {
+    public void setImageFile(MultipartFile imageFile) {
         this.imageFile = imageFile;
     }
 
