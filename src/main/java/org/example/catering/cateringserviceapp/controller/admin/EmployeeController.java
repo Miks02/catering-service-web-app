@@ -29,22 +29,22 @@ public class EmployeeController {
         if(id != null) {
             AppLogger.info("Izvlačenje zaposlenog sa ID: " + id);
 
-            var product = userService.getUserById(id);
+            var employee = userService.getUserById(id);
 
-            if(product.isEmpty()) {
+            if(employee.isEmpty()) {
                 AppLogger.error("Ne postoji zaposleni sa ID: " + id);
                 AppLogger.info("Preusmeravanje korisnika na formu za dodavanje zaposlenog...");
                 return "pages/admin/employees/form";
             }
 
-            vm.setFirstName(product.get().getFirstName());
-            vm.setLastName(product.get().getLastName());
-            vm.setEmail(product.get().getEmail());
-            vm.setPassword(product.get().getPassword());
-            vm.setAddress(product.get().getAddress());
-            vm.setPhone(product.get().getPhone());
-            vm.setId(product.get().getId());
-            vm.setImagePath(product.get().getImagePath());
+            vm.setFirstName(employee.get().getFirstName());
+            vm.setLastName(employee.get().getLastName());
+            vm.setEmail(employee.get().getEmail());
+            vm.setPassword(employee.get().getPassword());
+            vm.setAddress(employee.get().getAddress());
+            vm.setPhone(employee.get().getPhone());
+            vm.setId(employee.get().getId());
+            vm.setImagePath(employee.get().getImagePath());
 
         }
 
