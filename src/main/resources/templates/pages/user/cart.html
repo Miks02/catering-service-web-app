@@ -24,8 +24,8 @@
     }
 
     .product-image {
-        width: 100px;
-        height: 100px;
+        max-width: 100px;
+        max-height: 100px;
         object-fit: cover;
         border-radius: 8px;
     }
@@ -81,28 +81,27 @@
                     <div class="row g-4">
                         <div class="col-lg-8">
                             <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h4 class="mb-0">Korpa</h4>
-                                <span class="text-muted">3 stavke</span>
+                                <h4 class="mb-0 text-warning"><i class="bi-cart"></i> Korpa</h4>
+                                <span class="text-info fw-bold">3 stavke</span>
                             </div>
 
                             <div class="d-flex flex-column gap-3">
-                                <div class="product-card p-3 shadow-sm bg-warning">
+                                <div th:each="item : ${cart.items}" class="product-card p-3 shadow-sm bg-warning">
                                     <div class="row align-items-center">
                                         <div class="col-md-2">
-                                            <img src="https://via.placeholder.com/100" alt="Product" class="product-image">
+                                            <img th:src="'/uploads/' + ${item.product.imagePath}" alt="Product" class="product-image">
                                         </div>
                                         <div class="col-md-4">
-                                            <h6 class="mb-1">Wireless Headphones</h6>
-                                            <p class="text-muted mb-0">Black | Premium Series</p>
-                                            <span class="discount-badge mt-2">20% OFF</span>
+                                            <h6 th:text="${item.product.name}" class="mb-1">Wireless Headphones</h6>
+                                            <span th:text="${item.product.productType.displayName}" class="discount-badge mt-2">20% OFF</span>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="d-flex align-items-center gap-2">
-                                                <span class="quantity-input text-white bg-info">1</span>
+                                                <span th:text="${item.quantity}" class="quantity-input text-white bg-info">1</span>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
-                                            <span class="fw-bold">$129.99</span>
+                                            <span th:text="${item.price * item.quantity} + ' RSD'" class="fw-bold"></span>
                                         </div>
                                         <div class="col-md-1">
                                             <i class="bi bi-trash remove-btn"></i>
@@ -119,27 +118,22 @@
                                 <h5 class="mb-4">Detalji</h5>
 
                                 <div class="d-flex justify-content-between mb-3">
-                                    <span class="text-muted">Ukupno bez popusta</span>
-                                    <span>$479.97</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-3">
-                                    <span class="text-muted">Popust</span>
-                                    <span class="text-success">-$26.00</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-3">
                                     <span class="text-muted">Dostava</span>
-                                    <span>$5.00</span>
+                                    <span th:text="${#numbers.formatDecimal(delivery, 0, 'POINT', 0, 'COMMA') + ' RSD'}">
+
+                                    </span>
                                 </div>
                                 <hr>
                                 <div class="d-flex justify-content-between mb-4">
                                     <span class="fw-bold">Ukupno</span>
-                                    <span class="fw-bold">$458.97</span>
+                                    <span th:text="${#numbers.formatDecimal(finalPrice, 0, 'POINT', 0, 'COMMA') + ' RSD'}"
+                                          class="fw-bold">$458.97</span>
                                 </div>
 
 
 
                                 <button class="btn btn-primary checkout-btn w-100 mb-3">
-                                    Nastavi na plaćanje
+                                    Potvrdi porudžbinu
                                 </button>
 
                                 <div class="d-flex justify-content-center gap-2">
