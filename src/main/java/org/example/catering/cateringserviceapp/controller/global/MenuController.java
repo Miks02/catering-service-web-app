@@ -1,5 +1,7 @@
 package org.example.catering.cateringserviceapp.controller.global;
 
+import org.example.catering.cateringserviceapp.enums.EventType;
+import org.example.catering.cateringserviceapp.enums.ProductType;
 import org.example.catering.cateringserviceapp.models.Product;
 import org.example.catering.cateringserviceapp.service.ProductService;
 import org.springframework.data.domain.Page;
@@ -23,12 +25,20 @@ public class MenuController {
 
     @GetMapping("/menu")
     public String menu(@RequestParam(defaultValue = "1") int page,
-                       @RequestParam(defaultValue = "10") int pageSize,
+                       @RequestParam(defaultValue = "12") int pageSize,
                        Model model) {
 
         Pageable pageable = PageRequest.of(page - 1, pageSize);
-        Page<Product> menuPage = productService.getAllProducts(pageable);
+        Page<Product> menuPage = productService.getFilteredProducts(pageable);
 
+
+        model.addAttribute("sweet", ProductType.SWEET);
+        model.addAttribute("salty", ProductType.SALTY);
+        model.addAttribute("all", EventType.ALL);
+        model.addAttribute("wedding", EventType.WEDDING);
+        model.addAttribute("birthday", EventType.BIRTHDAY);
+        model.addAttribute("company", EventType.COMPANY);
+        model.addAttribute("private", EventType.PRIVATE);
         model.addAttribute("products", menuPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", menuPage.getTotalPages());
