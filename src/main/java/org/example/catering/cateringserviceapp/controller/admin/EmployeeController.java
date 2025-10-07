@@ -1,7 +1,10 @@
 package org.example.catering.cateringserviceapp.controller.admin;
 
 import jakarta.validation.Valid;
+import org.example.catering.cateringserviceapp.enums.Role;
+import org.example.catering.cateringserviceapp.exceptions.UserAlreadyExistsException;
 import org.example.catering.cateringserviceapp.helpers.AppLogger;
+import org.example.catering.cateringserviceapp.models.AppUser;
 import org.example.catering.cateringserviceapp.service.AppUserService;
 import org.example.catering.cateringserviceapp.viewmodels.EmployeeViewModel;
 import org.example.catering.cateringserviceapp.viewmodels.ProductViewModel;
@@ -13,6 +16,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
 
 @Controller
 @Secured("ROLE_ADMIN")
@@ -42,6 +47,7 @@ public class EmployeeController {
 
             vm.setFirstName(employee.get().getFirstName());
             vm.setLastName(employee.get().getLastName());
+            vm.setUsername(employee.get().getUsername());
             vm.setEmail(employee.get().getEmail());
             vm.setPassword(employee.get().getPassword());
             vm.setAddress(employee.get().getAddress());
@@ -77,7 +83,40 @@ public class EmployeeController {
             return "/pages/admin/employees/form";
         }
 
-        return "/pages/admin/employees/form";
+        if (imageFile != null && !imageFile.isEmpty()) {
+            vm.setImagePath(null);
+        }
+
+
+        var employee = new AppUser();
+        employee.setFirstName(vm.getFirstName());
+        employee.setLastName(vm.getLastName());
+        employee.setUsername(vm.getUsername());
+        employee.setEmail(vm.getEmail());
+        employee.setPassword(vm.getPassword());
+        employee.setAddress(vm.getAddress());
+        employee.setPhone(vm.getPhone());
+        employee.setId(vm.getId());
+
+        AppLogger.info("Korisnik se šalje u servis: " + employee.getUsername());
+
+
+        try {
+            userService.registerEmployee(employee, imageFile);
+            redirectAttributes.addFlashAttribute("successMessage", "Zaposleni je uspešno sačuvan.");
+        }
+        catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        catch(UserAlreadyExistsException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+        }
+        catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Došlo je do greške prilikom dodavanja zaposlenog, pokušajte ponovo kasnije...");
+
+        }
+
+        return "redirect:/admin/employees/form";
 
     }
 
