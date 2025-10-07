@@ -148,4 +148,19 @@ public class EmployeeController {
 
     }
 
+    @GetMapping("/list/delete/{id}")
+    public String deleteUser(
+            @PathVariable Long id,
+            RedirectAttributes redirectAttributes) {
+
+        try {
+            userService.deleteUser(id);
+            redirectAttributes.addFlashAttribute("successMessage", "Korisnik je uspešno obrisan!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Greška pri brisanju korisnika: " + e.getMessage());
+        }
+
+        return "redirect:/admin/employees/list";
+    }
+
 }
