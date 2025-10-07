@@ -19,6 +19,7 @@ public class SecurityConfig {
                         .requestMatchers("/public/**", "/").permitAll()
                         .requestMatchers("/css/**", "/images/**", "/js/**", "/uploads/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/user/**").hasRole("CLIENT")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
