@@ -120,7 +120,8 @@
 
                         <td>
                             <div class="product-actions">
-                                <a th:href="@{/admin/employees/form(id=${user.id})}"
+                                <a th:if="${user.role.displayName == 'Menadzer'}"
+                                        th:href="@{/admin/employees/form(id=${user.id})}"
                                    class="btn-action btn-edit"
                                    title="Izmeni">
                                     <i class="bi bi-pencil"></i>
