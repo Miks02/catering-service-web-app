@@ -130,11 +130,12 @@
 
                 <div class="row g-4" id="products-grid">
 
-                        <div th:each="product : ${products}"  class="col-lg-4 col-md-6 product-item"
+                        <div id="productData" th:each="product : ${products}"  class="col-lg-4 col-md-6 product-item"
                              th:attr="data-type=${product.productType},
                                       data-occasion=${product.eventType},
-                                      data-price=${product.price}">
-                            >
+                                      data-price=${product.price}
+                                      ">
+
                             <div class="product-card">
                                 <div class="product-image">
                                     <span th:class="'product-badge ' + (${product.quantity > 10} ? 'badge-new' : 'badge-popular')">
@@ -164,7 +165,13 @@
                                     </div>
                                     <div class="product-footer">
                                         <div class="product-price" th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA') + ' RSD'}"></div>
-                                        <button class="btn-add-cart" onclick="addToCart('Svečana Torta Deluxe', 8500)">
+                                        <button class="btn-add-cart"
+                                                th:attr="data-type=${product.productType},
+                                                data-occasion=${product.eventType},
+                                                data-price=${product.price},
+                                                data-product-id=${product.id},
+                                                data-name=${product.name}"
+                                                >
                                             <i class="bi bi-cart-plus"></i>
 
                                         </button>
@@ -238,7 +245,8 @@
 <div th:replace="~{layouts/base :: scripts}"></div>
 
 <script>
-    // Filter Products
+
+
     function filterProducts() {
         const typeFilters = Array.from(document.querySelectorAll('input[name="type"]:checked')).map(el => el.value);
         const occasionInput = document.querySelector('input[name="occasion"]:checked');
@@ -253,7 +261,6 @@
             const productOccasion = product.dataset.occasion;
             const productPrice = parseInt(product.dataset.price);
 
-            // 🔹 Ako je "ALL", ignoriši occasion filter
             const typeMatch = typeFilters.length === 0 || typeFilters.includes(productType);
             const occasionMatch = occasionFilter === 'ALL' || productOccasion === occasionFilter;
 
@@ -312,32 +319,6 @@
         filterProducts();
     }
 
-    function addToCart(productName, price) {
-        const toast = document.createElement('div');
-        toast.className = 'cart-toast';
-        toast.innerHTML = `
-            <i class="bi bi-check-circle-fill"></i>
-            <div class="toast-content">
-                <h6>Dodato u korpu!</h6>
-                <p>${productName} - ${price.toLocaleString()} RSD</p>
-            </div>
-            <button class="btn-close-toast" onclick="this.parentElement.remove()">
-                <i class="bi bi-x"></i>
-            </button>
-        `;
-
-        document.body.appendChild(toast);
-
-        // Auto remove after 3 seconds
-        setTimeout(() => {
-            toast.remove();
-        }, 3000);
-
-        // Here you would add actual cart logic
-        console.log('Added to cart:', productName, price);
-    }
-
-    // Attach filter listeners
     document.querySelectorAll('input[name="type"], input[name="occasion"], input[name="price"]').forEach(input => {
         input.addEventListener('change', filterProducts);
     });
