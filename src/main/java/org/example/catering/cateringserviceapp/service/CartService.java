@@ -20,7 +20,7 @@ public class CartService {
         this.cartItemRepository = cartItemRepository;
     }
 
-    public Cart getCart(String userId) {
+    public Cart getCart(Long userId) {
         return cartRepository.findByUserId(userId)
                 .orElseGet(() -> {
                     Cart newCart = new Cart();
@@ -29,7 +29,7 @@ public class CartService {
                 });
     }
 
-    public void addToCart(String userId, CartItem item) {
+    public void addToCart(Long userId, CartItem item) {
         Cart cart = getCart(userId);
 
         Optional<CartItem> existingItemOpt = cartItemRepository.findByCartIdAndProductId(cart.getId(), item.getProduct().getId());
@@ -44,7 +44,7 @@ public class CartService {
         }
     }
 
-    public void removeFromCart(String userId, Long itemId) {
+    public void removeFromCart(Long userId, Long itemId) {
         Cart cart = getCart(userId);
         cartItemRepository.findById(itemId).ifPresent(item -> {
             if (item.getCart().getId().equals(cart.getId())) {
@@ -53,7 +53,7 @@ public class CartService {
         });
     }
 
-    public void clearCart(String userId) {
+    public void clearCart(Long userId) {
         Cart cart = getCart(userId);
         List<CartItem> items = cartItemRepository.findByCartId(cart.getId());
         cartItemRepository.deleteAll(items);
