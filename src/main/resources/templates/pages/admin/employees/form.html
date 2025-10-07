@@ -43,12 +43,12 @@
             </div>
         </header>
 
-        <main class="admin-main" style="padding: 10px 0 !important;">
-            <div class="form-wrapper bg-white d-flex flex-column justify-content-center shadow position-center w-50 m-auto rounded-3"  style="border-top-left-radius: 15px; border-top-right-radius: 15px">
+        <main class="admin-main d-flex justify-content-center align-items-center" style="padding: 10px 0 !important;">
+            <div class="form-wrapper bg-white d-flex flex-column justify-content-center shadow align-items-center w-50 m-auto rounded-3"  style="border-top-left-radius: 15px; border-top-right-radius: 15px">
                 <div class="w-100 gradient-green p-2 text-light rounded-3"  style="border-top-left-radius: 15px; border-top-right-radius: 15px">
                     <h4 class="text-start fw-bolder p-2" th:text="${vm.id == null ? 'Dodaj zaposlenog' : 'Izmeni zaposlenog'}"></h4>
                 </div>
-                <input type="hidden" name="id" th:field="${vm.id}">
+
 
                 <form th:action="@{/admin/employees/save}"
                       th:object="${vm}"
@@ -56,6 +56,8 @@
                       enctype="multipart/form-data"
                       class="needs-validation p-3"
                       novalidate>
+
+                    <input type="hidden" name="id" th:field="${vm.id}">
 
                     <div class="form-group-wrapper">
                         <div class="form-group text-center">
@@ -65,15 +67,20 @@
                                 <label for="imageFile" class="avatar-upload">
                                     <div class="avatar-preview">
                                         <img id="imagePreview"
-                                             th:src="${vm.imagePath != null ? vm.imagePath : '/images/Korisnik.png'}"
+                                             th:src="${vm.imagePath != null ? '/uploads/' + vm.imagePath : '/images/Korisnik.png'}"
                                              alt="Slika zaposlenog"
                                              class="avatar-image"/>
+
                                         <div class="avatar-overlay">
                                             <i class="fas fa-camera me-2"></i>
                                             Izaberi sliku
                                         </div>
                                     </div>
                                 </label>
+                            </div>
+                            <div th:if="${#fields.hasErrors('imageFile')}"
+                                 th:text="${#fields.errors('imageFile')[0]}"
+                                 class="text-danger fw-bolder">
                             </div>
 
                         </div>
@@ -206,6 +213,8 @@
         </main>
     </div>
 </div>
+
+
 
 <div class="mobile-overlay" id="mobileOverlay"></div>
 
