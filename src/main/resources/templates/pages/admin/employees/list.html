@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="sr" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head th:replace="~{layouts/admin :: head}"></head>
+<body>
+
+<div class="admin-wrapper">
+    <aside th:replace="~{layouts/admin :: adminSidebar}"></aside>
+
+    <div class="admin-content">
+        <header class="admin-topbar">
+            <button type="button" class="topbar-mobile-toggle" id="mobileToggle">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <h1 class="topbar-title">
+                <i class="bi-people"></i>
+                Korisnici
+            </h1>
+
+            <div class="topbar-actions">
+                <a th:href="@{/public}" class="topbar-btn btn-site">
+                    <i class="bi bi-globe"></i>
+                    <span>Sajt</span>
+                </a>
+
+                <div class="topbar-user">
+                    <div class="topbar-user-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <span class="topbar-user-name" sec:authorize="isAuthenticated()" sec:authentication="name">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="admin-main">
+            <div class="list-header">
+                <div class="list-header-info">
+                    <h2>
+                        <i class="bi-people-fill"></i>
+                        Lista korisnika i zaposlenih
+                    </h2>
+                    <p>Upravljanje korisnicima</p>
+
+                </div>
+
+                <a th:href="@{/admin/employees/form}" class="btn-add-product">
+                    <i class="bi bi-plus-circle"></i>
+                    Dodaj zaposlenog
+                </a>
+            </div>
+
+            <div class="filter-bar">
+                <div class="search-input-group">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="text"
+                           id="searchInput"
+                           placeholder="Pretraži korisnike..."
+                           >
+                </div>
+
+                <div class="filter-select-group">
+                    <select id="categoryFilter" onchange="filterProducts()">
+                        <option value="">Sve kategorije</option>
+                        <option th:each="type : ${T(org.example.catering.cateringserviceapp.enums.Role).values()}"
+                                th:value="${type}"
+                                th:text="${type.displayName}">
+                        </option>
+                    </select>
+                </div>
+
+
+                <button class="btn-clear-filters" onclick="clearFilters()">
+                    <i class="bi bi-x-circle me-2"></i>
+                    Poništi
+                </button>
+            </div>
+
+            <div class="products-table-container" th:if="${users != null && !users.isEmpty()}">
+                <table class="products-table">
+                    <thead>
+                    <tr>
+                        <th>Slika</th>
+                        <th>Ime i prezime</th>
+                        <th>Korisničko ime</th>
+                        <th>Email</th>
+                        <th>Adresa</th>
+                        <th>Broj telefona</th>
+                        <th>Nagradni poeni</th>
+                        <th>Akcije</th>
+                    </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                    <tr th:each="user : ${users}"
+                        th:data-category="${user.role}"
+                        th:data-name="${user.firstName + user.lastName}">
+                        <td class="product-image-cell" >
+                            <img class="avatar-image  rounded-3" th:src="@{${user.imagePath != null ? '/uploads/' + user.imagePath : '/images/menadzeri/Prazan.png'}}"
+                                 th:alt="slika">
+                        </td>
+                        <td class="product-name-cell">
+                            <span class="product-name" th:text="${user.firstName + ' ' + user.lastName}">Ime korisnika</span>
+                            <span class="product-category" th:text="${user.role.displayName}">Uloga</span>
+                        </td>
+
+                        <td>
+                            <span th:text="${user.username}">Korisničko ime</span>
+                        </td>
+                        <td>
+                            <span th:text="${user.email}">Email</span>
+                        </td>
+                        <td>
+                            <span th:text="${user.address == null ? 'Nije dostupno' : user.address}">Adresa</span>
+                        </td>
+                        <td>
+                            <span th:text="${user.phone == null ? 'Nije dostupno' : user.phone}">Telefon</span>
+                        </td>
+                        <td>
+                            <span th:text="${user.rewardPoints}">Poeni</span>
+                        </td>
+
+                        <td>
+                            <div class="product-actions">
+                                <a th:href="@{/admin/employees/form(id=${user.id})}"
+                                   class="btn-action btn-edit"
+                                   title="Izmeni">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a th:href="@{/admin/employees/list/delete/{id}(id=${user.id})}"
+                                   class="btn-action btn-delete"
+                                   title="Obriši">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" th:if="${users == null || users.isEmpty()}">
+                <i class="bi bi-box-seam empty-icon"></i>
+                <h3>Nema proizvoda</h3>
+                <p>Počnite sa dodavanjem vaših proizvoda klikom na dugme "Dodaj Proizvod"</p>
+                <a th:href="@{/admin/employees/form}" class="btn-add-product">
+                    <i class="bi bi-plus-circle"></i>
+                    Dodaj zaposlenog
+                </a>
+            </div>
+
+            <div class="pagination-container" th:if="${users != null && !users.isEmpty()}">
+                <div class="pagination-info">
+                    Prikazano
+                    <strong th:text="${(currentPage - 1) * pageSize + 1}">1</strong>
+                    -
+                    <strong th:text="${currentPage * pageSize > totalItems ? totalItems : currentPage * pageSize}">10</strong>
+                    od
+                    <strong th:text="${totalItems}">50</strong>
+                    proizvoda
+                </div>
+
+                <div class="pagination-controls">
+                    <a th:href="@{/admin/products/list(page=${currentPage - 1}, pageSize=${pageSize})}"
+                       th:classappend="${currentPage == 1 ? 'disabled' : ''}"
+                       class="pagination-btn"
+                       th:disabled="${currentPage == 1}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+
+                    <th:block th:each="i : ${#numbers.sequence(1, totalPages)}">
+                        <a th:if="${i == 1}"
+                           th:href="@{/admin/products/list(page=${i}, pageSize=${pageSize})}"
+                           th:classappend="${currentPage == i ? 'active' : ''}"
+                           class="pagination-btn"
+                           th:text="${i}">1</a>
+
+                        <span th:if="${i == 2 && currentPage > 3}" class="pagination-btn disabled">...</span>
+
+                        <a th:if="${i > 1 && i < totalPages && i >= currentPage - 1 && i <= currentPage + 1}"
+                           th:href="@{/admin/products/list(page=${i}, pageSize=${pageSize})}"
+                           th:classappend="${currentPage == i ? 'active' : ''}"
+                           class="pagination-btn"
+                           th:text="${i}">2</a>
+
+                        <span th:if="${i == totalPages - 1 && currentPage < totalPages - 2}" class="pagination-btn disabled">...</span>
+
+                        <a th:if="${i == totalPages && totalPages > 1}"
+                           th:href="@{/admin/products/list(page=${i}, pageSize=${pageSize})}"
+                           th:classappend="${currentPage == i ? 'active' : ''}"
+                           class="pagination-btn"
+                           th:text="${i}">5</a>
+                    </th:block>
+
+                    <a th:href="@{/admin/products/list(page=${currentPage + 1}, pageSize=${pageSize})}"
+                       th:classappend="${currentPage == totalPages ? 'disabled' : ''}"
+                       class="pagination-btn"
+                       th:disabled="${currentPage == totalPages}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div th:if="${successMessage != null}">
+    <div class="cart-toast">
+        <i class="bi bi-check-circle-fill"></i>
+        <div class="toast-content">
+            <h6>Uspešno!</h6>
+            <p th:text="${successMessage}"></p>
+        </div>
+        <button class="btn-close-toast" onclick="this.parentElement.remove()">
+            <i class="bi bi-x"></i>
+        </button>
+    </div>
+</div>
+<div th:if="${errorMessage != null}">
+    <div class="cart-toast">
+        <i class="bi bi-exclamation-octagon"></i>
+        <div class="toast-content">
+            <h6>Greška!</h6>
+            <p th:text="${errorMessage}"></p>
+        </div>
+        <button class="btn-close-toast" onclick="this.parentElement.remove()">
+            <i class="bi bi-x"></i>
+        </button>
+    </div>
+</div>
+
+
+
+
+
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<div th:replace="~{layouts/admin :: scripts}"></div>
+
+<div th:if="${successMessage != null}">
+    <div class="cart-toast">
+        <i class="bi bi-check-circle-fill"></i>
+        <div class="toast-content">
+            <h6 class="text-success">Uspešno!</h6>
+            <p th:text="${successMessage}"></p>
+        </div>
+        <button class="btn-close-toast" onclick="this.parentElement.remove()">
+            <i class="bi bi-x"></i>
+        </button>
+    </div>
+</div>
+
+<div th:if="${errorMessage != null}">
+    <div class="cart-toast text-danger">
+        <i class="bi bi-exclamation-octagon text-danger"></i>
+        <div class="toast-content text-danger">
+            <h6 class="text-danger">Greška!</h6>
+            <p th:text="${errorMessage}"></p>
+        </div>
+        <button class="btn-close-toast" onclick="this.parentElement.remove()">
+            <i class="bi bi-x"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+
+    function filterProducts() {
+        const searchValue = document.getElementById('searchInput').value.toLowerCase();
+        const categoryValue = document.getElementById('categoryFilter').value;
+
+
+        const rows = document.querySelectorAll('#productsTableBody tr');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const name = row.dataset.name.toLowerCase();
+            const category = row.dataset.category;
+
+            const matchesSearch = name.includes(searchValue);
+            const matchesCategory = !categoryValue || category === categoryValue;
+
+            if (matchesSearch && matchesCategory ) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        const totalRows = rows.length;
+        if (visibleCount === 0) {
+            document.querySelector('.products-table-container').innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-search empty-icon"></i>
+                    <h3>Nema rezultata</h3>
+                    <p>Pokušajte sa drugim filterima ili pretraživanjem</p>
+                </div>
+            `;
+        }
+
+        if(searchValue.value === "" && categoryValue.value === "" && statusValue.value === "") {
+
+        }
+    }
+
+
+
+    function clearFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('categoryFilter').value = '';
+        filterProducts();
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.classList.add('fade');
+                setTimeout(() => alert.remove(), 150);
+            }, 5000);
+        });
+    });
+</script>
+
+</body>
+</html>
