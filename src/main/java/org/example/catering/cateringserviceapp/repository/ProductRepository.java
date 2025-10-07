@@ -14,7 +14,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     public Optional<Product> findProductById(Long id);
     public Optional<Product> findProductByName(String name);
-
+    Page<Product> findByActiveTrueAndQuantityGreaterThan(int quantity, Pageable pageable);
     @Transactional
     public void deleteProductById(Long id);
 

@@ -75,13 +75,15 @@ public class ProductService {
         return productRepository.findAll(pageable);
     }
 
+    public Page<Product> getFilteredProducts(Pageable pageable){
+        return productRepository.findByActiveTrueAndQuantityGreaterThan(0, pageable);
+    }
+
     public Optional<Product> findById(Long id) {
         return productRepository.findById(id);
     }
 
-    public Optional<Product> findByName(String name) {
-        return productRepository.findProductByName(name);
-    }
+
 
     public void deleteProduct(Long id) {
         productRepository.deleteProductById(id);
