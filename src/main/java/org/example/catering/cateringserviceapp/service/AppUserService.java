@@ -166,5 +166,9 @@ public class AppUserService implements UserDetailsService {
         return userRepo.findAll(pageable);
     }
 
+    public void deleteUser(Long id) {
+        userRepo.deleteById(id);
+    }
+
 
 }
