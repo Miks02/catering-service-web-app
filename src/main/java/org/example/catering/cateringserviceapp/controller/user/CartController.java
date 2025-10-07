@@ -45,6 +45,22 @@ public class CartController {
     public String cart(Model model) {
         Long userId = getUserId();
         Cart cart = cartService.getCart(userId);
+
+        double productsPrice = 0;
+        double finalPrice = 0;
+        double delivery = 0;
+
+        if(!cart.getItems().isEmpty()) {
+            for(CartItem cartItem : cart.getItems()) {
+                for(int j = 0; j < cartItem.getQuantity(); j++) {
+                    productsPrice = cartItem.getPrice() + productsPrice;
+                }
+            }
+            delivery = 500;
+            finalPrice = productsPrice + delivery;
+        }
+        model.addAttribute("finalPrice", finalPrice);
+        model.addAttribute("delivery", delivery);
         model.addAttribute("cart", cart);
         return "pages/user/cart";
     }
