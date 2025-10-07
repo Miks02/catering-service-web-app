@@ -7,6 +7,7 @@ import org.example.catering.cateringserviceapp.models.CartItem;
 import org.example.catering.cateringserviceapp.models.Product;
 import org.example.catering.cateringserviceapp.service.AppUserService;
 import org.example.catering.cateringserviceapp.service.CartService;
+import org.example.catering.cateringserviceapp.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
@@ -22,10 +23,12 @@ public class CartController {
 
     private final CartService cartService;
     private final AppUserService appUserService;
+    private final ProductService productService;
 
-    public CartController(CartService cartService,  AppUserService appUserService) {
+    public CartController(CartService cartService,  AppUserService appUserService, ProductService productService) {
         this.cartService = cartService;
         this.appUserService = appUserService;
+        this.productService = productService;
     }
 
     private Long getUserId() {
@@ -53,8 +56,9 @@ public class CartController {
             Long userId = getUserId();
 
             CartItem newItem = new CartItem();
-            Product product = new Product();
-            product.setId(cartItemDTO.getProductId());
+
+            Product product = productService.findById(cartItemDTO.getProductId())
+                    .orElseThrow(() -> new RuntimeException("Proizvod ne postoji"));
 
             newItem.setProduct(product);
             newItem.setQuantity(cartItemDTO.getQuantity());
