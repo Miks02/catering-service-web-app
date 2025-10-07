@@ -4,9 +4,12 @@ import org.example.catering.cateringserviceapp.enums.Role;
 import org.example.catering.cateringserviceapp.exceptions.UserAlreadyExistsException;
 import org.example.catering.cateringserviceapp.helpers.AppLogger;
 import org.example.catering.cateringserviceapp.models.AppUser;
+import org.example.catering.cateringserviceapp.models.Product;
 import org.example.catering.cateringserviceapp.repository.AppUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -66,7 +69,10 @@ public class AppUserService implements UserDetailsService {
     public void registerEmployee(AppUser employee, MultipartFile imageFile) throws IOException, IllegalArgumentException {
         AppUser employeeToSave = new AppUser();
 
+        AppLogger.warn("ID KORISNIKA: " + employee.getId());
+
         if(employee.getId() == null) {
+            AppLogger.info("Korisnik se dodaje");
             if(getUserByUsername(employee.getUsername()).isPresent())
                 throw new UserAlreadyExistsException("Korisničko ime je zauzeto");
 
@@ -77,15 +83,18 @@ public class AppUserService implements UserDetailsService {
 
         }
         else {
+            AppLogger.info("Korisnik se ažurira");
             employeeToSave = getUserById(employee.getId()).orElseThrow(() -> new IllegalArgumentException("Korisnik nije pronadjen"));
             if(!employeeToSave.getUsername().equals(employee.getUsername())) {
                 if(getUserByUsername(employee.getUsername()).isPresent())
                     throw new UserAlreadyExistsException("Korisničko ime je zauzeto");
+            }
+            if(!employeeToSave.getEmail().equals(employee.getEmail())) {
                 if(getUserByEmail(employee.getEmail()).isPresent())
                     throw new UserAlreadyExistsException("Email adresa je zauzeta");
             }
 
-            AppLogger.info("Korisnik se ažurira");
+
 
         }
 
@@ -151,6 +160,10 @@ public class AppUserService implements UserDetailsService {
 
     public Optional<AppUser> getUserByUsername(String username) {
         return userRepo.findUserByUsername(username);
+    }
+
+    public Page<AppUser> getAllUsers(Pageable pageable) {
+        return userRepo.findAll(pageable);
     }
 
 
