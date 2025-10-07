@@ -8,6 +8,9 @@ import org.example.catering.cateringserviceapp.models.AppUser;
 import org.example.catering.cateringserviceapp.service.AppUserService;
 import org.example.catering.cateringserviceapp.viewmodels.EmployeeViewModel;
 import org.example.catering.cateringserviceapp.viewmodels.ProductViewModel;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +21,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @Secured("ROLE_ADMIN")
@@ -28,6 +34,28 @@ public class EmployeeController {
 
     public EmployeeController(AppUserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("/list")
+    public String listEmployees(@RequestParam(defaultValue = "1") int page,
+                                @RequestParam(defaultValue = "10") int pageSize,
+                                Model model) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Page<AppUser> userPage = userService.getAllUsers(pageable);
+        List<AppUser> users = userPage.getContent()
+                .stream()
+                .sorted(Comparator.comparing(AppUser::getRole).reversed())
+                .filter(appUser -> !appUser.getRole().equals(Role.ADMIN))
+                .toList();
+
+        model.addAttribute("users", users);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", userPage.getTotalPages());
+        model.addAttribute("totalItems", userPage.getTotalElements());
+        model.addAttribute("pageSize", pageSize);
+
+        return "pages/admin/employees/list";
+
     }
 
     @GetMapping("/form")
@@ -116,7 +144,7 @@ public class EmployeeController {
 
         }
 
-        return "redirect:/admin/employees/form";
+        return "redirect:/admin/employees/list";
 
     }
 
