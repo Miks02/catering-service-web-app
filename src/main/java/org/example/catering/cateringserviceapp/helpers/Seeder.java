@@ -17,26 +17,33 @@ public class Seeder {
 
     @PostConstruct
     public void init(){
-        var admin = new AppUser();
 
-        admin.setUsername("admin");
-        admin.setPassword("123456");
-        admin.setFirstName("Milan");
-        admin.setLastName("Nikolić");
-        admin.setEmail("milan.miki.nikolic2002@gmail.com");
-        admin.setRole(Role.ADMIN);
 
-        var manager = new AppUser();
 
-        manager.setUsername("manager");
-        manager.setPassword("123456");
-        manager.setFirstName("Andrija");
-        manager.setLastName("Pantović");
-        manager.setEmail("andrija25922@gmail.com");
-        manager.setRole(Role.MANAGER);
+        if(userService.getAllUsers().stream().noneMatch(appUser -> appUser.getRole().equals(Role.ADMIN))){
+            var admin = new AppUser();
 
-        userService.seedUser(admin);
-        userService.seedUser(manager);
+            admin.setUsername("admin");
+            admin.setPassword("123456");
+            admin.setFirstName("Milan");
+            admin.setLastName("Nikolić");
+            admin.setEmail("milan.miki.nikolic2002@gmail.com");
+            admin.setRole(Role.ADMIN);
+
+            userService.seedUser(admin);
+        }
+        if(userService.getAllUsers().stream().noneMatch(appUser -> appUser.getRole().equals(Role.MANAGER))) {
+            var manager = new AppUser();
+
+            manager.setUsername("Pantovic03");
+            manager.setPassword("123456");
+            manager.setFirstName("Andrija");
+            manager.setLastName("Pantović");
+            manager.setEmail("andrija25922@gmail.com");
+            manager.setRole(Role.MANAGER);
+
+            userService.seedUser(manager);
+        }
 
     }
 
