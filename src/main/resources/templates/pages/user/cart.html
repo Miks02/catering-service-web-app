@@ -82,7 +82,11 @@
                         <div class="col-lg-8">
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <h4 class="mb-0 text-warning"><i class="bi-cart"></i> Korpa</h4>
-                                <span class="text-info fw-bold">3 stavke</span>
+                                <span th:text="'Broj stavki: ' + ${cart.items.size()}" class="text-info fw-bold">3 stavke</span>
+                            </div>
+
+                            <div class="d-flex justify-content-center align-items-center h-100 w-100" th:if="${cart.items.isEmpty()}">
+                                <h2 class="text-warning">Korpa je prazna</h2>
                             </div>
 
                             <div class="d-flex flex-column gap-3">
@@ -101,10 +105,15 @@
                                             </div>
                                         </div>
                                         <div class="col-md-2">
-                                            <span th:text="${item.price * item.quantity} + ' RSD'" class="fw-bold"></span>
+                                            <span th:text="${#numbers.formatDecimal(item.price * item.quantity, 0, 'POINT', 0, 'COMMA') + ' RSD'}"
+                                                  class="fw-bold"></span>
                                         </div>
                                         <div class="col-md-1">
-                                            <i class="bi bi-trash remove-btn"></i>
+                                            <form th:action="@{'/user/cart/remove/' + ${item.id}}" method="post" style="display:inline;">
+                                                <button type="submit" class="btn bg-danger p-1">
+                                                    <i class="bi bi-trash text-white fw-bold"></i>
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
                                 </div>
@@ -113,8 +122,8 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-4">
-                            <div class="summary-card p-4 shadow-sm bg-warning">
+                        <div  class="col-lg-4">
+                            <div  class="summary-card p-4 shadow-sm bg-warning">
                                 <h5 class="mb-4">Detalji</h5>
 
                                 <div class="d-flex justify-content-between mb-3">
@@ -122,6 +131,14 @@
                                     <span th:text="${#numbers.formatDecimal(delivery, 0, 'POINT', 0, 'COMMA') + ' RSD'}">
 
                                     </span>
+
+                                </div>
+                                <div th:if="${appliedDiscount && finalPrice > 0}" class="d-flex justify-content-between mb-3">
+                                    <span class="text-muted">Popust</span>
+                                    <span> 10%
+
+                                    </span>
+
                                 </div>
                                 <hr>
                                 <div class="d-flex justify-content-between mb-4">
@@ -131,15 +148,20 @@
                                 </div>
 
 
-
-                                <button class="btn btn-primary checkout-btn w-100 mb-3">
-                                    Potvrdi porudžbinu
-                                </button>
-
-                                <div class="d-flex justify-content-center gap-2">
-                                    <i class="bi-cart-check text-success"></i>
-                                    <small class="text-muted">Isporuka za 1-2 radna dana</small>
+                                <div th:if="${!cart.items.isEmpty()}">
+                                    <button type="button" class="btn btn-primary checkout-btn w-100 mb-3" data-bs-toggle="modal" data-bs-target="#orderModal">
+                                        Potvrdi porudžbinu
+                                    </button>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <i class="bi-exclamation-diamond text-primary"></i>
+                                        <small class="text-center fw-bolder text-primary">Skupljenim loyalty poenima ostvarujete pravo na 10% popusta!</small>
+                                    </div>
+                                    <div class="d-flex justify-content-center gap-2 mt-1">
+                                        <i class="bi-house-check text-success"></i>
+                                        <small class="text-muted">Isporuka za 1-2 radna dana</small>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -150,7 +172,66 @@
         </th:block>
     </main>
 </div>
+<div th:if="${successMessage != null}">
+    <div class="cart-toast">
+        <i class="bi bi-check-circle-fill"></i>
+        <div class="toast-content">
+            <h6>Uspešno!</h6>
+            <p th:text="${successMessage}"></p>
+        </div>
+        <button class="btn-close-toast" onclick="this.parentElement.remove()">
+            <i class="bi bi-x"></i>
+        </button>
+    </div>
+</div>
+<div th:if="${errorMessage != null}">
+    <div class="cart-toast">
+        <i class="bi bi-exclamation-octagon"></i>
+        <div class="toast-content">
+            <h6>Greška!</h6>
+            <p th:text="${errorMessage}"></p>
+        </div>
+        <button class="btn-close-toast" onclick="this.parentElement.remove()">
+            <i class="bi bi-x"></i>
+        </button>
+    </div>
+</div>
 
+<div class="modal fade" id="orderModal" tabindex="-1" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-warning rounded-4 shadow-lg">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold" id="orderModalLabel">
+                    <i class="bi bi-bag-check-fill text-success me-2"></i> Potvrda porudžbine
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zatvori"></button>
+            </div>
+
+            <form th:action="@{/user/order/confirm}" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="address" class="form-label fw-semibold">Adresa isporuke</label>
+                        <input type="text" id="address" name="shippingAddress" class="form-control" placeholder="Unesite adresu" required>
+                    </div>
+
+                    <div class="alert alert-info small mb-0">
+                        <i class="bi bi-truck me-1"></i>
+                        Isporuka se očekuje u roku od 1-2 radna dana.
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 d-flex justify-content-between">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        Otkaži
+                    </button>
+                    <button type="submit" class="btn btn-primary px-4">
+                        Pošalji porudžbinu
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <div th:replace="~{layouts/base :: footer}"></div>
 
