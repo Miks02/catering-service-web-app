@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.*;
 import java.sql.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -164,6 +165,10 @@ public class AppUserService implements UserDetailsService {
 
     public Page<AppUser> getAllUsers(Pageable pageable) {
         return userRepo.findAll(pageable);
+    }
+
+    public List<AppUser> getAllUsers() {
+        return userRepo.findAll();
     }
 
     public void deleteUser(Long id) {
