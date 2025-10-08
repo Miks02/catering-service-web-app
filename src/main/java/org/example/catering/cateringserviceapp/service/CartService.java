@@ -1,5 +1,6 @@
 package org.example.catering.cateringserviceapp.service;
 
+import jakarta.transaction.Transactional;
 import org.example.catering.cateringserviceapp.models.Cart;
 import org.example.catering.cateringserviceapp.models.CartItem;
 import org.example.catering.cateringserviceapp.repository.CartItemRepository;
@@ -53,10 +54,15 @@ public class CartService {
         });
     }
 
+    @Transactional
     public void clearCart(Long userId) {
         Cart cart = getCart(userId);
+        for(CartItem  item : cart.getItems()) {
+            System.out.println("Dandar od korpe: " + item.getId());
+        }
         List<CartItem> items = cartItemRepository.findByCartId(cart.getId());
-        cartItemRepository.deleteAll(items);
+        cartItemRepository.deleteCartItemsByCartId(cart.getId());
+
     }
 
 }
