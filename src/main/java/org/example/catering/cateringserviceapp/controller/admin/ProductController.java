@@ -58,7 +58,7 @@ public class ProductController {
             var product = productService.findById(id);
 
             if(product.isEmpty()) {
-                AppLogger.error("Ne postoji proizvoda sa ID: " + id);
+                AppLogger.error("Ne postoji proizvod sa ID: " + id);
                 AppLogger.info("Preusmeravanje korisnika na formu za dodavanje proizvoda...");
                 return "pages/admin/products/form";
             }

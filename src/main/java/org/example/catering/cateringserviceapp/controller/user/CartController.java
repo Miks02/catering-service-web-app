@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @Secured("ROLE_CLIENT")
@@ -31,19 +32,19 @@ public class CartController {
         this.productService = productService;
     }
 
-    private Long getUserId() {
+    private AppUser getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var user = appUserService.getUserByUsername(authentication.getName());
 
         if(user.isEmpty()) throw new RuntimeException("Korisnik nije pronadjen");
 
-        return user.get().getId();
+        return user.get();
 
     }
 
     @GetMapping("/cart")
     public String cart(Model model) {
-        Long userId = getUserId();
+        Long userId = getUser().getId();
         Cart cart = cartService.getCart(userId);
 
         double productsPrice = 0;
@@ -69,7 +70,7 @@ public class CartController {
     @ResponseBody
     public ResponseEntity<?> addToCart(@RequestBody CartItemDTO cartItemDTO) {
         try {
-            Long userId = getUserId();
+            Long userId = getUser().getId();
 
             CartItem newItem = new CartItem();
 
@@ -85,6 +86,20 @@ public class CartController {
             return ResponseEntity.ok("Proizvod je dodat u korpu: " + cartItemDTO.getQuantity());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Greška prilikom dodavanja u korpu: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/cart/remove/{id}")
+    public String removeFromCart(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Long userId = getUser().getId();
+        System.out.println("ID: " + id);
+        try {
+            cartService.removeFromCart(userId, id);
+            redirectAttributes.addFlashAttribute("successMessage", "Proizvod je uspešno uklonjen");
+            return "redirect:/user/cart";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Došlo je do greške prilikom uklanjanja proizvoda");
+            return "redirect:/user/cart";
         }
     }
 
