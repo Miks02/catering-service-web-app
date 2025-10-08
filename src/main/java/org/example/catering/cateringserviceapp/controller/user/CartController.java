@@ -50,6 +50,7 @@ public class CartController {
         double productsPrice = 0;
         double finalPrice = 0;
         double delivery = 0;
+        boolean appliedDiscount = getUser().getLoyaltyPoints() >= 50;
 
         if(!cart.getItems().isEmpty()) {
             for(CartItem cartItem : cart.getItems()) {
@@ -60,6 +61,12 @@ public class CartController {
             delivery = 500;
             finalPrice = productsPrice + delivery;
         }
+
+        if(appliedDiscount) {
+            finalPrice = finalPrice * 0.9;
+        }
+
+        model.addAttribute("appliedDiscount", appliedDiscount);
         model.addAttribute("finalPrice", finalPrice);
         model.addAttribute("delivery", delivery);
         model.addAttribute("cart", cart);
