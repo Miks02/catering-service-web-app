@@ -68,14 +68,14 @@ public class AppUser {
         this.phone = phone;
     }
 
-    private int rewardPoints = 0;
+    private int loyaltyPoints = 0;
 
-    public int getRewardPoints() {
-        return rewardPoints;
+    public int getLoyaltyPoints() {
+        return loyaltyPoints;
     }
 
-    public void setRewardPoints(int rewardPoints) {
-        this.rewardPoints = rewardPoints;
+    public void setLoyaltyPoints(int loyaltyPoints) {
+        this.loyaltyPoints = loyaltyPoints;
     }
 
     public String getFirstName() {
