@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sr" xmlns:th="http://www.thymeleaf.org" th:with="pageTitle='Meni - Naša Ponuda'">
+<html lang="sr" xmlns:th="http://www.thymeleaf.org" th:with="pageTitle='Meni - Naša Ponuda'" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head th:replace="~{layouts/base :: head}"></head>
 <body>
 
@@ -148,7 +148,7 @@
                                     </div>
                                     <div class="product-footer">
                                         <div class="product-price" th:text="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA') + ' RSD'}"></div>
-                                        <button class="btn-add-cart"
+                                        <button sec:authorize="hasRole('CLIENT')" class="btn-add-cart"
                                                 th:attr="data-type=${product.productType},
                                                 data-occasion=${product.eventType},
                                                 data-price=${product.price},
