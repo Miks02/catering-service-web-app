@@ -64,7 +64,7 @@
             <h1 class="display-3 fw-bold mb-4 animate-fade-in" th:text="${heroTitle != null ? heroTitle : 'Ketering Služba'}">Ketering Služba</h1>
             <p class="lead mb-5 animate-fade-in-delayed" th:text="${heroSubtitle != null ? heroSubtitle : 'Savršena hrana za sve vaše proslave i događaje'}">Savršena hrana za sve vaše proslave i događaje</p>
             <div class="animate-fade-in-more-delayed" th:if="${showHeroButtons == null or showHeroButtons == true}">
-                <a th:href="@{/public/catalogue}" class="btn btn-warning shadow btn-lg me-3 px-5 py-3">
+                <a th:href="@{/public/menu}" class="btn btn-warning shadow btn-lg me-3 px-5 py-3">
                     <i class="bi bi-book"></i> Pogledaj Meni
                 </a>
                 <a th:href="@{/public/contact}" class="btn btn-outline-light shadow btn-lg px-5 py-3">
