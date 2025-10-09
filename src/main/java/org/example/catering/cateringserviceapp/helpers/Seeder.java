@@ -18,7 +18,18 @@ public class Seeder {
     @PostConstruct
     public void init(){
 
+        if(userService.getAllUsers().stream().noneMatch(appUser ->  appUser.getRole().equals(Role.CLIENT))) {
+            var user = new AppUser();
 
+            user.setUsername("user");
+            user.setPassword("123456");
+            user.setFirstName("Milan");
+            user.setLastName("Nikolić");
+            user.setEmail("user@gmail.com");
+            user.setRole(Role.CLIENT);
+
+            userService.seedUser(user);
+        }
 
         if(userService.getAllUsers().stream().noneMatch(appUser -> appUser.getRole().equals(Role.ADMIN))){
             var admin = new AppUser();
