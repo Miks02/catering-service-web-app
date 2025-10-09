@@ -4,6 +4,9 @@ import jakarta.transaction.Transactional;
 import org.example.catering.cateringserviceapp.enums.DeliveryStatus;
 import org.example.catering.cateringserviceapp.models.*;
 import org.example.catering.cateringserviceapp.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -85,5 +88,9 @@ public class OrderService {
         cartService.clearCart(userId);
 
         return new CreateOrderResult(discountApplied, finalPrice);
+    }
+
+    public Page<Order> getAllOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable);
     }
 }
