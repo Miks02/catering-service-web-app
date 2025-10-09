@@ -13,20 +13,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@Controller
+@Controller("userOrderController")
 @Secured("ROLE_CLIENT")
 @RequestMapping("/user/order")
 public class OrderController {
 
     private final OrderService orderService;
     private final AppUserService appUserService;
-    private final CartService cartService;
 
     public OrderController(OrderService orderService, AppUserService appUserService, CartService cartService) {
         this.orderService = orderService;
-        this.appUserService = appUserService;
-        this.cartService = cartService;
-    }
+        this.appUserService = appUserService;}
 
     private AppUser getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
