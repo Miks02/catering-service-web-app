@@ -36,12 +36,16 @@
             <div class="list-header">
                 <div class="list-header-info">
                     <h2>
-                        <i class="bi-people-fill"></i>
+                        <i class="bi-bing"></i>
                         Lista porudžbina
                     </h2>
                     <p>Upravljanje porudžbinama</p>
 
                 </div>
+                <a th:href="@{/admin/orders/delete}" class="btn btn-danger p-3 shadow">
+                    <i class="bi bi-bing"></i>
+                    Obriši porudžbine
+                </a>
 
             </div>
 
@@ -78,7 +82,11 @@
 
                         <td>
                             <div class="product-actions">
-
+                                <a th:href="@{/admin/orders/confirm(id=${order.id})}"
+                                   class="btn-action btn-edit"
+                                   title="Potvrdi">
+                                    <i class="bi bi-check-all"></i>
+                                </a>
                             </div>
                         </td>
                     </tr>

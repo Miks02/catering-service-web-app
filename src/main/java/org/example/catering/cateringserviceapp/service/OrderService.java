@@ -96,6 +96,15 @@ public class OrderService {
 
     public List<Order> getAllOrders() {return orderRepository.findAll();}
 
+    public void updateStatus(DeliveryStatus deliveryStatus, Long orderId) throws Exception {
+        var order = orderRepository.findById(orderId);
+
+        if(order.isEmpty()) throw new Exception("Porudzbina nije pronadjena!");
+
+        order.get().setStatus(deliveryStatus);
+        orderRepository.save(order.get());
+
+    }
     @Transactional
     public void deleteAllOrders() {orderRepository.deleteAll();}
 }

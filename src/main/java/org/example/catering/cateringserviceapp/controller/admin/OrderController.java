@@ -1,5 +1,7 @@
 package org.example.catering.cateringserviceapp.controller.admin;
 
+import org.example.catering.cateringserviceapp.enums.DeliveryStatus;
+import org.example.catering.cateringserviceapp.helpers.AppLogger;
 import org.example.catering.cateringserviceapp.models.Order;
 import org.example.catering.cateringserviceapp.models.Product;
 import org.example.catering.cateringserviceapp.service.AppUserService;
@@ -55,6 +57,21 @@ public class OrderController {
         orderService.deleteAllOrders();
 
         return  "redirect:/admin/orders";
+    }
+
+    @GetMapping("/confirm")
+    public String confirmOrder(Long id) {
+
+        try {
+            orderService.updateStatus(DeliveryStatus.DELIVERED, id);
+        }
+        catch(Exception e) {
+            AppLogger.error(e.getMessage());
+            return "redirect:/admin/orders";
+        }
+
+        return "redirect:/admin/orders";
+
     }
 
 
