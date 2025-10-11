@@ -95,4 +95,7 @@ public class OrderService {
     }
 
     public List<Order> getAllOrders() {return orderRepository.findAll();}
+
+    @Transactional
+    public void deleteAllOrders() {orderRepository.deleteAll();}
 }

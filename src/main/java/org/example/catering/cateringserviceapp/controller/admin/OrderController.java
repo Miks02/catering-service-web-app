@@ -50,5 +50,12 @@ public class OrderController {
 
     }
 
+    @GetMapping("/delete")
+    public String deleteAllOrders() {
+        orderService.deleteAllOrders();
+
+        return  "redirect:/admin/orders";
+    }
+
 
 }
