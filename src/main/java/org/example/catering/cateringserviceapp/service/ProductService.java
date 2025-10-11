@@ -83,6 +83,7 @@ public class ProductService {
         return productRepository.findById(id);
     }
 
+    public List<Product> getAllProducts() {return productRepository.findAll(); }
 
 
     public void deleteProduct(Long id) {
