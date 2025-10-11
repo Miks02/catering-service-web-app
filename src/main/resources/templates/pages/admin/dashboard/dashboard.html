@@ -100,17 +100,17 @@
                                         <i class="bi bi-calendar-check me-2"></i>
                                         Današnje porudžbine
                                     </h6>
-                                    <p class="mb-0 text-muted">8 novih porudžbina • 42.500 RSD</p>
+                                    <p class="mb-0 text-muted" th:text="${ordersToday}"></p>
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="p-3 rounded" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-left: 4px solid #f59e0b;">
                                     <h6 class="fw-bold mb-2" style="color: #d97706;">
-                                        <i class="bi bi-currency-dollar me-2"></i>
-                                        Prihod danas
+                                        <i class="bi-people-fill me-2"></i>
+                                        Registrovani danas
                                     </h6>
-                                    <p class="mb-0 text-muted">Prosek: 5.312 RSD po porudžbini</p>
+                                    <p class="mb-0 text-muted" th:text="${registeredToday}"></p>
                                 </div>
                             </div>
                         </div>
@@ -141,58 +141,58 @@
                 </div>
             </div>
 
-            <div class="admin-card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3 class="card-title mb-0">
-                        <i class="bi bi-receipt"></i>
-                        Najnovije porudžbine
-                    </h3>
-                    <a th:href="@{/admin/orders}" class="btn btn-sm btn-outline-success">
-                        <i class="bi bi-eye"></i> Prikaži sve
-                    </a>
-                </div>
+<!--            <div class="admin-card">-->
+<!--                <div class="card-header d-flex justify-content-between align-items-center">-->
+<!--                    <h3 class="card-title mb-0">-->
+<!--                        <i class="bi bi-receipt"></i>-->
+<!--                        Najnovije porudžbine-->
+<!--                    </h3>-->
+<!--                    <a th:href="@{/admin/orders}" class="btn btn-sm btn-outline-success">-->
+<!--                        <i class="bi bi-eye"></i> Prikaži sve-->
+<!--                    </a>-->
+<!--                </div>-->
 
-                <div class="table-responsive">
-                    <table class="table table-hover mb-0">
-                        <thead style="background: #f8fafc;">
-                        <tr>
-                            <th>ID</th>
-                            <th>Korisnik</th>
-                            <th>Datum</th>
-                            <th>Iznos</th>
-                            <th>Status</th>
-                            <th>Akcije</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td class="fw-bold">#1001</td>
-                            <td>Marko Marković</td>
-                            <td>05.10.2025</td>
-                            <td class="fw-bold text-success">8.500 RSD</td>
-                            <td><span class="badge bg-warning text-dark">Na čekanju</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="fw-bold">#1002</td>
-                            <td>Ana Anić</td>
-                            <td>05.10.2025</td>
-                            <td class="fw-bold text-success">12.300 RSD</td>
-                            <td><span class="badge bg-success">Završeno</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+<!--                <div class="table-responsive">-->
+<!--                    <table class="table table-hover mb-0">-->
+<!--                        <thead style="background: #f8fafc;">-->
+<!--                        <tr>-->
+<!--                            <th>ID</th>-->
+<!--                            <th>Korisnik</th>-->
+<!--                            <th>Datum</th>-->
+<!--                            <th>Iznos</th>-->
+<!--                            <th>Status</th>-->
+<!--                            <th>Akcije</th>-->
+<!--                        </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                        <tr>-->
+<!--                            <td class="fw-bold">#1001</td>-->
+<!--                            <td>Marko Marković</td>-->
+<!--                            <td>05.10.2025</td>-->
+<!--                            <td class="fw-bold text-success">8.500 RSD</td>-->
+<!--                            <td><span class="badge bg-warning text-dark">Na čekanju</span></td>-->
+<!--                            <td>-->
+<!--                                <button class="btn btn-sm btn-outline-primary">-->
+<!--                                    <i class="bi bi-eye"></i>-->
+<!--                                </button>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <td class="fw-bold">#1002</td>-->
+<!--                            <td>Ana Anić</td>-->
+<!--                            <td>05.10.2025</td>-->
+<!--                            <td class="fw-bold text-success">12.300 RSD</td>-->
+<!--                            <td><span class="badge bg-success">Završeno</span></td>-->
+<!--                            <td>-->
+<!--                                <button class="btn btn-sm btn-outline-primary">-->
+<!--                                    <i class="bi bi-eye"></i>-->
+<!--                                </button>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
         </main>
     </div>
 </div>
