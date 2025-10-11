@@ -45,6 +45,9 @@
         <div sec:authorize="hasRole('ADMIN')">
             <a class="btn btn-outline-warning ms-auto mx-5" th:href="@{/admin/dashboard}">Administracija</a>
         </div>
+        <div sec:authorize="hasRole('MANAGER')">
+            <a class="btn btn-outline-warning ms-auto mx-5" th:href="@{/manager/products/list}">Menadžment</a>
+        </div>
         <div sec:authorize="hasRole('CLIENT')">
             <a class="btn btn-outline-info ms-auto mx-5" th:href="@{/user/cart}"><i class="bi bi-cart4"></i></a>
         </div>
